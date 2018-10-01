@@ -1,0 +1,298 @@
+<#include "/admin/util/editor/editor.html" />
+<link href="css/plugins/workflow/modules/formsautomaticassignment/automaticassignment.css" rel="stylesheet"/>
+
+<#function isSelected entry default_values >
+    <#if default_values?has_content>
+        <#list default_values as default_value>
+            <#if default_value=entry>       
+                <#return true>
+            </#if>
+        </#list>
+    </#if>
+ <#return false>
+</#function>
+
+<div>
+    <h2> #i18n{module.workflow.formsautomaticassignment.task_config.title}</h2>
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-3 col-md-3 col-lg-3" for="title">#i18n{module.workflow.formsautomaticassignment.task_config.label_title} * :</label> 
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <#if config?exists && config.title??>
+                    <input type="text" name="title" id="" size="80" value="${config.title}"  maxlength="255" class="form-control input-sm" />
+                <#else>
+                    <input type="text" name="title" id="" size="80" value="" maxlength="255" class="form-control input-sm" />
+                </#if>
+                <span class="help-block">#i18n{module.workflow.formsautomaticassignment.task_config.label_title}</span>
+            </div>
+        </div>
+        
+        
+        <div class="form-group">
+             <label class="control-label col-xs-12 col-sm-3 col-md-3 col-lg-3" for="directory">#i18n{module.workflow.formsautomaticassignment.task_config.label_form} :</label>
+             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <div class="input-group">
+                      <@comboWithParams 'id_form' "${config.idForm}" "class='form-control input-sm'" form_list />
+					  <span class="input-group-btn">
+                      <button class="btn btn-primary btn-sm" type="submit" name="apply"  value="apply"  title="#i18n{module.workflow.formsautomaticassignment.task_config.update_button}">
+                          <i class="glyphicon glyphicon-ok"></i>
+                      </button>
+					  </span>
+                </div>
+                <span class="help-block"> #i18n{module.workflow.formsautomaticassignment.task_config.label_form_comment}</span>
+             </div>
+        </div>
+        <span class="help-block">#i18n{module.workflow.formsautomaticassignment.task_config.label_form_comment_assign}</span>
+        <#if config??>  
+            <#if authorized_question_list??>
+                <div class="highlight-box">
+                    <h2>#i18n{module.workflow.formsautomaticassignment.task_config.question_list.title}</h2>
+                    <#if authorized_question_list?size = 0>
+                        #i18n{module.workflow.formsautomaticassignment.task_config.question_list.label.noentry}
+                    <#else>                 
+                        <table>
+                            <tr>
+                                <th>#i18n{module.workflow.formsautomaticassignment.task_config.label.question}</th>                     
+                                <th>#i18n{module.workflow.formsautomaticassignment.task_config.label.actions}</th>
+                            </tr>
+                            <#list authorized_question_list as question>
+                                <tr>
+                                    <td>${question.title}</td>                                 
+                                    <td>    
+                                        <a class="btn btn-primary btn-sm" href="jsp/admin/plugins/workflow/modules/formsautomaticassignment/ModifyQuestionAssignment.jsp?id_task=${config.idTask}&id_question=${question.id}" > 
+                                            <i class="glyphicon glyphicon-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </#list>                            
+                        </table>
+                    </#if>      
+                    <br />  <br />                          
+                </div>       
+            </#if>
+        </#if>      
+        <div class="form-group">
+             <label class="control-label col-xs-12 col-sm-3 col-md-3 col-lg-3" for="is_notify">#i18n{module.workflow.formsautomaticassignment.task_config.label_notification} :</label>
+             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+				<div class="checkbox">
+					<label>
+                <#if config?exists && config.notify>
+                    <input type="checkbox" name="is_notify" value="1" checked="checked" onclick="javascript:notification();" />
+                <#else>
+                    <input type="checkbox" name="is_notify" value="1" onclick="javascript:notification();" />
+                </#if>
+				</label>
+				</div>
+            </div>
+        </div>
+        <div id="notification">
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 col-md-3 col-lg-3">#i18n{module.workflow.formsautomaticassignment.task_config.label_mapping_workgroup_mailing_list} :</label>
+                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <#if workgroup_list?has_content>
+                    <#assign is_first = true>
+                    <#list workgroup_list as workgroup>
+                        <#if !is_first>
+                        <#else>
+                            <#assign is_first = false>
+                        </#if>
+						<div class="checkbox">
+                        <label for="">
+                        <input type="checkbox" class="checkbox" name="workgroups" value="${workgroup.item.key}"
+                            <#if workgroup.config?exists> checked="checked" </#if> />
+                        ${workgroup.item.description}
+						</label>
+						</div>
+                        #i18n{module.workflow.formsautomaticassignment.task_config.label_notification} :
+                        <#if workgroup.config?exists>
+                            <@comboSortedWithParams name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value="${workgroup.config.idMailingList}" additionalParameters="class='form-control input-sm'" />
+                        <#else>
+                            <@comboSortedWithParams name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value="-1" additionalParameters="class='form-control input-sm'" />
+                        </#if>
+                        <br />
+                    </#list>
+                <#else>
+                   #i18n{module.workflow.formsautomaticassignment.task_config.no_working_group}
+                </#if>
+                </div>
+            </div>
+            <div class="form-group">
+                 <label class="control-label col-xs-12 col-sm-3 col-md-3 col-lg-3" for="sender_name">#i18n{module.workflow.formsautomaticassignment.task_config.label_user_name} * :</label>
+                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <#if config?exists&&config.senderName?exists>
+                        <input type="text" name="sender_name" id="" size="80" value="${config.senderName}" maxlength="255" class="form-control input-sm" />
+                    <#else>
+                        <input type="text" name="sender_name" id="" size="80" value="" maxlength="255" class="form-control input-sm" />
+                    </#if>
+                    <span class="help-block">#i18n{module.workflow.formsautomaticassignment.task_config.label_user_name_comment}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 col-md-3 col-lg-3" for="recipients_cc">#i18n{module.workflow.formsautomaticassignment.task_config.label_recipients_cc} :</label>
+                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <#if config?exists && config.recipientsCc?has_content>
+                    <input type="text" name="recipients_cc" id="" size="80" value="${config.recipientsCc}" maxlength="255" class="form-control input-sm" />
+                <#else>
+                    <input type="text" name="recipients_cc" id="" size="80" value="" maxlength="255" class="form-control input-sm" />
+                </#if>
+                <span class="help-block">#i18n{module.workflow.formsautomaticassignment.task_config.label_recipients_cc_comment}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 col-md-3 col-lg-3" for="recipients_bcc">#i18n{module.workflow.formsautomaticassignment.task_config.label_recipients_bcc} :</label>
+                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <#if config?exists && config.recipientsBcc?has_content>
+                    <input type="text" name="recipients_bcc" id="" size="80" value="${config.recipientsBcc}" maxlength="255" class="form-control input-sm" />
+                <#else>
+                    <input type="text" name="recipients_bcc" id="" size="80" value="" maxlength="255" class="form-control input-sm" />
+                </#if>
+                <span class="help-block">#i18n{module.workflow.formsautomaticassignment.task_config.label_recipients_bcc_comment}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 col-md-3 col-lg-3" for="suject">#i18n{module.workflow.formsautomaticassignment.task_config.label_subject} * :</label>
+                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <#if config?exists&&config.subject?exists>
+                            <input type="text" name="subject" id="" size="80" value="${config.subject}" maxlength="255" class="form-control input-sm" />
+                    <#else>
+                            <input type="text" name="subject" id="" size="80" value="" maxlength="255" class="form-control input-sm" />
+                    </#if>      
+                   <span class="help-block"> #i18n{module.workflow.formsautomaticassignment.task_config.label_subject_comment}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3 col-md-3 col-lg-3" for="message">#i18n{module.workflow.formsautomaticassignment.task_config.label_message} * :</label>
+                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <div class="editor">
+                        <#if config?exists && config.message?exists>
+                            <textarea name="message" id="" rows="5" cols="80" class="richtext form-control input-sm">${config.message}</textarea>
+                        <#else>
+                            <textarea name="message" id="" rows="5" cols="80" class="richtext form-control input-sm"></textarea>
+                        </#if>      
+                    </div>
+                   <span class="help-block">#i18n{module.workflow.formsautomaticassignment.task_config.label_message_comment}</span>
+                </div>
+            </div>
+            <#if full_question_list??>
+                <div class="highlight-box">
+                    <h2>#i18n{module.workflow.formsautomaticassignment.task_config.full_question_list.title}</h2>
+                    <#if full_question_list?size = 0>
+                            #i18n{module.workflow.formsautomaticassignment.task_config.question_list.label.noentry}
+                    <#else>                 
+                        <table>
+                            <tr>
+                                <th>#i18n{module.workflow.formsautomaticassignment.task_config.label.question}</th>                     
+                                <th>#i18n{module.workflow.formsautomaticassignment.task_config.label.freemarker}</th>
+                                
+                            </tr>
+                            <#list full_question_list as question>
+                                <#if question?? && question.title??>
+                                    <tr>
+                                        <td>${question.title}</td>
+                                        <td>&#36;&#123;question_${question.id}&#125;</td>                                    
+                                    </tr>
+                                </#if>
+                            </#list>
+                        </table>
+                    </#if>
+                    <br />
+                    <br />
+                </div>
+            </#if>
+            <#if question_types_file_list?? && question_types_file_list?has_content>
+                <div class="highlight-box">
+                    <h2>#i18n{module.workflow.formsautomaticassignment.task_config.label_question_file}</h2>
+                    <table>
+                        <tr>
+                            <th>#i18n{module.workflow.formsautomaticassignment.task_config.label_file_checked}</th>
+                            <th>#i18n{module.workflow.formsautomaticassignment.task_config.label_file_name}</th>
+                        </tr>
+                        <#list question_types_file_list as question>
+                            <tr>
+                                <td>
+                                    <div class="checkbox">
+										<label>
+											<input type="checkbox" id="list_position_question_file_checked" name="list_position_question_file_checked" value="${question.entry.position}"
+											<#if ( config.listPositionsQuestionFile?? && config.listPositionsQuestionFile?has_content && isSelected( question.entry.position, config.listPositionsQuestionFile ))>
+                                            checked="checked" 
+											</#if>/>
+										</label>
+									</div>
+                                </td>
+                                <td>
+                                    ${question.title}
+                                </td>
+                            </tr>
+                          </#list>
+                    </table>
+                </div>
+            </#if>
+            
+            <div class="form-group">
+                 <label class="control-label col-xs-12 col-sm-3 col-md-3 col-lg-3" for="view_form_response">#i18n{module.workflow.formsautomaticassignment.task_config.label_view_form_response} :</label>
+                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <div class="checkbox">
+						<label>
+							<input type="checkbox" name="view_form_response" id="view_form_response" value="1" 
+							<#if config?exists && config.viewFormResponse>
+								checked="checked"
+							</#if> />
+						</label>
+					</div>
+					<span class="help-block">#i18n{module.workflow.formsautomaticassignment.task_config.label_view_form_response_comment}</span>
+                </div>
+            </div>
+            <div id="record">
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 col-md-3 col-lg-3" for="label_link_view_form_response">#i18n{module.workflow.formsautomaticassignment.task_config.label_label_link_view_form_response} * :</label>
+                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <#if config?exists && config.labelLinkViewRecord?has_content>
+                        <input type="text" name="label_link_view_form_response" id="" size="80" value="${config.labelLinkViewRecord}" maxlength="255"/>
+                    <#else>
+                        <input type="text" name="label_link_view_form_response" id="" size="80" value="" maxlength="255" class="form-control input-sm" />
+                    </#if>      
+                    <span class="help-block">#i18n{module.workflow.formsautomaticassignment.task_config.label_label_link_view_form_response_comment}</span>
+                    <span class="help-block">#i18n{module.workflow.formsautomaticassignment.task_config.label_freemarker_link_view_form_response}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<script type="text/javascript" charset="utf-8">
+    function notification()
+    {
+        var notif = document.getElementsByName("is_notify");
+
+        if(notif[0].checked)
+        {
+            document.getElementById("notification").style.display = "block";
+            <#-- <#list workgroup_list as workgroup>
+                if(document.getElementById("div_${workgroup.item.code}"))
+                {
+                    document.getElementById("div_${workgroup.item.code}").style.display = "block";
+                }
+            </#list> -->
+        }
+        else
+        {
+            document.getElementById("notification").style.display = "none";
+            <#-- <#list workgroup_list as workgroup>
+                if(document.getElementById("div_${workgroup.item.code}"))
+                {
+                    document.getElementById("div_${workgroup.item.code}").style.display = "none";
+                }
+            </#list> -->
+        }
+    }
+    notification();
+    
+    $( document ).ready( function(  ) {
+        if ( !$( '#view_form_response' ).is( ':checked' ) ) {
+            $( '#record' ).hide(  );
+        }
+        $( '#view_form_response' ).click( function(  ) {
+            $( '#record' ).toggle(  $( this ).is( ':checked' ) );
+        } );
+    } );
+</script>
+
+<@initEditor />
