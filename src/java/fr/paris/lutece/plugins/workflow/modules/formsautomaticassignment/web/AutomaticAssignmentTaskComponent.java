@@ -47,7 +47,9 @@ import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.forms.business.FormHome;
 import fr.paris.lutece.plugins.forms.business.Question;
+import fr.paris.lutece.plugins.workflow.modules.assignment.business.AssignmentHistory;
 import fr.paris.lutece.plugins.workflow.modules.assignment.business.WorkgroupConfig;
+import fr.paris.lutece.plugins.workflow.modules.assignment.service.IAssignmentHistoryService;
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.business.TaskAutomaticAssignmentConfig;
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service.IAutomaticAssignmentService;
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service.TaskAutomaticAssignmentConfigService;
@@ -59,15 +61,20 @@ import fr.paris.lutece.portal.business.mailinglist.MailingList;
 import fr.paris.lutece.portal.business.mailinglist.MailingListHome;
 import fr.paris.lutece.portal.business.workgroup.AdminWorkgroup;
 import fr.paris.lutece.portal.business.workgroup.AdminWorkgroupHome;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
+import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
+import fr.paris.lutece.util.xml.XmlUtil;
 
 /**
  *
@@ -78,6 +85,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
 {
     // Templates
     private static final String TEMPLATE_TASK_AUTO_ASSIGNMENT_CONFIG = "admin/plugins/workflow/modules/formsautomaticassignment/task_config.html";
+    private static final String TEMPLATE_TASK_AUTO_ASSIGNMENT_INFORMATION = "admin/plugins/workflow/modules/formsautomaticassignment/task_assignment_information.html";
 
     // Markers
     private static final String MARK_CONFIG = "config";
@@ -116,6 +124,8 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     private static final String FIELD_MAILINGLIST_SENDER_NAME = "module.workflow.formsautomaticassignment.task_config.label_mailinglist_sender_name";
     private static final String FIELD_LABEL_LINK_view_form_response = "module.workflow.formsautomaticassignment.task_config.label_label_link_view_form_response";
 
+    private static final String PROPERTY_SELECT_EMPTY_CHOICE = "module.workflow.assignment.task_assignment_config.label_empty_choice";
+
     // Messages
     private static final String MESSAGE_MANDATORY_FIELD = "module.workflow.formsautomaticassignment.message.mandatory.field";
     private static final String MESSAGE_NO_MAILINGLIST_FOR_WORKGROUP = "module.workflow.assignment.task_assignment_config.message.no_mailinglist_for_workgroup";
@@ -124,12 +134,19 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     // JSP
     private static final String JSP_DO_UPDATE_DIRECTORY = "jsp/admin/plugins/workflow/modules/formsautomaticassignment/DoUpdateDirectory.jsp";
 
+    // XML
+    private static final String TAG_ASSIGNMENT = "assignment";
+    private static final String TAG_LIST_WORKGROUP = "list-workgroup";
+    private static final String TAG_WORKGROUP = "workgroup";
+    
     // SERVICES
     @Inject
     @Named( TaskAutomaticAssignmentConfigService.BEAN_SERVICE )
     private ITaskConfigService _taskAutomaticAssignmentConfigService;
     @Inject
     private IAutomaticAssignmentService _automaticAssignmentService;
+    @Inject
+    private IAssignmentHistoryService _assignmentHistoryService;
 
     /**
      * {@inheritDoc}
@@ -368,7 +385,49 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     @Override
     public String getDisplayTaskInformation( int nIdHistory, HttpServletRequest request, Locale locale, ITask task )
     {
-        return null;
+    	Map<String, Object> model = new HashMap<String, Object>( );
+    	String strNothing = I18nService.getLocalizedString( PROPERTY_SELECT_EMPTY_CHOICE, locale );
+    	TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( task.getId( ) );
+    	List<AssignmentHistory> listAssignmentHistory= _assignmentHistoryService.getListByHistory(nIdHistory, task.getId( ), WorkflowUtils.getPlugin( ));
+    	ReferenceList refWorkgroups = AdminWorkgroupService.getUserWorkgroups( AdminUserService.getAdminUser( request ), locale );
+
+          List<HashMap<String, Object>> listWorkgroups = new ArrayList<HashMap<String, Object>>( );
+
+          for ( ReferenceItem referenceItem : refWorkgroups )
+          {
+              if ( !referenceItem.getCode( ).equals( AdminWorkgroupService.ALL_GROUPS ) )
+              {
+                  HashMap<String, Object> workgroupsItem = new HashMap<String, Object>( );
+                  workgroupsItem.put( MARK_ITEM, referenceItem );
+
+                  if ( ( config != null ) && ( config.getWorkgroups( ) != null ) )
+                  {
+                      for ( AssignmentHistory assignmentHistory : listAssignmentHistory )
+                      {
+                          if ( referenceItem.getCode( ).equals( assignmentHistory.getWorkgroup()) )
+                          {
+                              workgroupsItem.put( MARK_CONFIG, referenceItem );
+
+                              break;
+                          }
+                      }
+                  }
+
+                  listWorkgroups.add( workgroupsItem );
+              }
+          }
+
+          ReferenceList refMailingList = new ReferenceList( );
+          refMailingList.addItem( WorkflowUtils.CONSTANT_ID_NULL, strNothing );
+          refMailingList.addAll( AdminMailingListService.getMailingLists( AdminUserService.getAdminUser( request ) ) );
+
+          model.put( MARK_WORKGROUP_LIST, listWorkgroups );
+          model.put( MARK_CONFIG, config );
+          model.put( MARK_MAILING_LIST, refMailingList );
+    	
+    	HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_TASK_AUTO_ASSIGNMENT_INFORMATION, locale, model );
+
+         return template.getHtml( );
     }
 
     /**
@@ -377,6 +436,33 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     @Override
     public String getTaskInformationXml( int nIdHistory, HttpServletRequest request, Locale locale, ITask task )
     {
-        return null;
+    	 List<AssignmentHistory> listAssignmentHistory = _assignmentHistoryService.getListByHistory( nIdHistory, task.getId( ), WorkflowUtils.getPlugin( ) );
+
+         StringBuffer strXml = new StringBuffer( );
+
+         XmlUtil.beginElement( strXml, TAG_ASSIGNMENT );
+         XmlUtil.beginElement( strXml, TAG_LIST_WORKGROUP );
+
+         for ( ReferenceItem referenceItem : AdminWorkgroupService.getUserWorkgroups( AdminUserService.getAdminUser( request ), locale ) )
+         {
+             if ( !referenceItem.getCode( ).equals( AdminWorkgroupService.ALL_GROUPS ) )
+             {
+                 if ( listAssignmentHistory != null )
+                 {
+                     for ( AssignmentHistory assignmentHistory : listAssignmentHistory )
+                     {
+                         if ( referenceItem.getCode( ).equals( assignmentHistory.getWorkgroup( ) ) )
+                         {
+                             XmlUtil.addElementHtml( strXml, TAG_WORKGROUP, referenceItem.getName( ) );
+                         }
+                     }
+                 }
+             }
+         }
+
+         XmlUtil.endElement( strXml, TAG_LIST_WORKGROUP );
+         XmlUtil.endElement( strXml, TAG_ASSIGNMENT );
+
+         return strXml.toString( );
     }
 }
