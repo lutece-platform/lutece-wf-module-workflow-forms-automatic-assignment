@@ -114,7 +114,7 @@ public class TaskAutomaticAssignment extends SimpleTask
                         for ( Response response : formQuestionResponse.getEntryResponse( ) )
                         {
 
-                            if ( response.getField( ).getIdField( ) == automaticAssignment.getIdField( ) )
+                            if ( response.getField( )!= null && response.getField( ).getIdField( ) == automaticAssignment.getIdField( ) )
                             {
 
                                 listWorkgroup.add( automaticAssignment.getWorkgroupKey( ) );
