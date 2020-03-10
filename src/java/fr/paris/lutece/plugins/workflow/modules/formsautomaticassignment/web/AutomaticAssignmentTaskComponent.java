@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -138,7 +138,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     private static final String TAG_ASSIGNMENT = "assignment";
     private static final String TAG_LIST_WORKGROUP = "list-workgroup";
     private static final String TAG_WORKGROUP = "workgroup";
-    
+
     // SERVICES
     @Inject
     @Named( TaskAutomaticAssignmentConfigService.BEAN_SERVICE )
@@ -198,7 +198,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
         if ( !strError.equals( WorkflowUtils.EMPTY_STRING ) )
         {
             Object [ ] tabRequiredFields = {
-                I18nService.getLocalizedString( strError, locale )
+                    I18nService.getLocalizedString( strError, locale )
             };
 
             return AdminMessageService.getMessageUrl( request, MESSAGE_MANDATORY_FIELD, tabRequiredFields, AdminMessage.TYPE_STOP );
@@ -235,8 +235,8 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
                 {
                     if ( WorkflowUtils.convertStringToInt( request.getParameter( PARAMETER_ID_MAILING_LIST + "_" + tabWorkgroups [i] ) ) != -1 )
                     {
-                        workgroupConfig.setIdMailingList( WorkflowUtils.convertStringToInt( request.getParameter( PARAMETER_ID_MAILING_LIST + "_"
-                                + tabWorkgroups [i] ) ) );
+                        workgroupConfig.setIdMailingList(
+                                WorkflowUtils.convertStringToInt( request.getParameter( PARAMETER_ID_MAILING_LIST + "_" + tabWorkgroups [i] ) ) );
                     }
                     else
                     {
@@ -385,49 +385,49 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     @Override
     public String getDisplayTaskInformation( int nIdHistory, HttpServletRequest request, Locale locale, ITask task )
     {
-    	Map<String, Object> model = new HashMap<String, Object>( );
-    	String strNothing = I18nService.getLocalizedString( PROPERTY_SELECT_EMPTY_CHOICE, locale );
-    	TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( task.getId( ) );
-    	List<AssignmentHistory> listAssignmentHistory= _assignmentHistoryService.getListByHistory(nIdHistory, task.getId( ), WorkflowUtils.getPlugin( ));
-    	ReferenceList refWorkgroups = AdminWorkgroupService.getUserWorkgroups( AdminUserService.getAdminUser( request ), locale );
+        Map<String, Object> model = new HashMap<String, Object>( );
+        String strNothing = I18nService.getLocalizedString( PROPERTY_SELECT_EMPTY_CHOICE, locale );
+        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( task.getId( ) );
+        List<AssignmentHistory> listAssignmentHistory = _assignmentHistoryService.getListByHistory( nIdHistory, task.getId( ), WorkflowUtils.getPlugin( ) );
+        ReferenceList refWorkgroups = AdminWorkgroupService.getUserWorkgroups( AdminUserService.getAdminUser( request ), locale );
 
-          List<HashMap<String, Object>> listWorkgroups = new ArrayList<HashMap<String, Object>>( );
+        List<HashMap<String, Object>> listWorkgroups = new ArrayList<HashMap<String, Object>>( );
 
-          for ( ReferenceItem referenceItem : refWorkgroups )
-          {
-              if ( !referenceItem.getCode( ).equals( AdminWorkgroupService.ALL_GROUPS ) )
-              {
-                  HashMap<String, Object> workgroupsItem = new HashMap<String, Object>( );
-                  workgroupsItem.put( MARK_ITEM, referenceItem );
+        for ( ReferenceItem referenceItem : refWorkgroups )
+        {
+            if ( !referenceItem.getCode( ).equals( AdminWorkgroupService.ALL_GROUPS ) )
+            {
+                HashMap<String, Object> workgroupsItem = new HashMap<String, Object>( );
+                workgroupsItem.put( MARK_ITEM, referenceItem );
 
-                  if ( ( config != null ) && ( config.getWorkgroups( ) != null ) )
-                  {
-                      for ( AssignmentHistory assignmentHistory : listAssignmentHistory )
-                      {
-                          if ( referenceItem.getCode( ).equals( assignmentHistory.getWorkgroup()) )
-                          {
-                              workgroupsItem.put( MARK_CONFIG, referenceItem );
+                if ( ( config != null ) && ( config.getWorkgroups( ) != null ) )
+                {
+                    for ( AssignmentHistory assignmentHistory : listAssignmentHistory )
+                    {
+                        if ( referenceItem.getCode( ).equals( assignmentHistory.getWorkgroup( ) ) )
+                        {
+                            workgroupsItem.put( MARK_CONFIG, referenceItem );
 
-                              break;
-                          }
-                      }
-                  }
+                            break;
+                        }
+                    }
+                }
 
-                  listWorkgroups.add( workgroupsItem );
-              }
-          }
+                listWorkgroups.add( workgroupsItem );
+            }
+        }
 
-          ReferenceList refMailingList = new ReferenceList( );
-          refMailingList.addItem( WorkflowUtils.CONSTANT_ID_NULL, strNothing );
-          refMailingList.addAll( AdminMailingListService.getMailingLists( AdminUserService.getAdminUser( request ) ) );
+        ReferenceList refMailingList = new ReferenceList( );
+        refMailingList.addItem( WorkflowUtils.CONSTANT_ID_NULL, strNothing );
+        refMailingList.addAll( AdminMailingListService.getMailingLists( AdminUserService.getAdminUser( request ) ) );
 
-          model.put( MARK_WORKGROUP_LIST, listWorkgroups );
-          model.put( MARK_CONFIG, config );
-          model.put( MARK_MAILING_LIST, refMailingList );
-    	
-    	HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_TASK_AUTO_ASSIGNMENT_INFORMATION, locale, model );
+        model.put( MARK_WORKGROUP_LIST, listWorkgroups );
+        model.put( MARK_CONFIG, config );
+        model.put( MARK_MAILING_LIST, refMailingList );
 
-         return template.getHtml( );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_TASK_AUTO_ASSIGNMENT_INFORMATION, locale, model );
+
+        return template.getHtml( );
     }
 
     /**
@@ -436,33 +436,33 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     @Override
     public String getTaskInformationXml( int nIdHistory, HttpServletRequest request, Locale locale, ITask task )
     {
-    	 List<AssignmentHistory> listAssignmentHistory = _assignmentHistoryService.getListByHistory( nIdHistory, task.getId( ), WorkflowUtils.getPlugin( ) );
+        List<AssignmentHistory> listAssignmentHistory = _assignmentHistoryService.getListByHistory( nIdHistory, task.getId( ), WorkflowUtils.getPlugin( ) );
 
-         StringBuffer strXml = new StringBuffer( );
+        StringBuffer strXml = new StringBuffer( );
 
-         XmlUtil.beginElement( strXml, TAG_ASSIGNMENT );
-         XmlUtil.beginElement( strXml, TAG_LIST_WORKGROUP );
+        XmlUtil.beginElement( strXml, TAG_ASSIGNMENT );
+        XmlUtil.beginElement( strXml, TAG_LIST_WORKGROUP );
 
-         for ( ReferenceItem referenceItem : AdminWorkgroupService.getUserWorkgroups( AdminUserService.getAdminUser( request ), locale ) )
-         {
-             if ( !referenceItem.getCode( ).equals( AdminWorkgroupService.ALL_GROUPS ) )
-             {
-                 if ( listAssignmentHistory != null )
-                 {
-                     for ( AssignmentHistory assignmentHistory : listAssignmentHistory )
-                     {
-                         if ( referenceItem.getCode( ).equals( assignmentHistory.getWorkgroup( ) ) )
-                         {
-                             XmlUtil.addElementHtml( strXml, TAG_WORKGROUP, referenceItem.getName( ) );
-                         }
-                     }
-                 }
-             }
-         }
+        for ( ReferenceItem referenceItem : AdminWorkgroupService.getUserWorkgroups( AdminUserService.getAdminUser( request ), locale ) )
+        {
+            if ( !referenceItem.getCode( ).equals( AdminWorkgroupService.ALL_GROUPS ) )
+            {
+                if ( listAssignmentHistory != null )
+                {
+                    for ( AssignmentHistory assignmentHistory : listAssignmentHistory )
+                    {
+                        if ( referenceItem.getCode( ).equals( assignmentHistory.getWorkgroup( ) ) )
+                        {
+                            XmlUtil.addElementHtml( strXml, TAG_WORKGROUP, referenceItem.getName( ) );
+                        }
+                    }
+                }
+            }
+        }
 
-         XmlUtil.endElement( strXml, TAG_LIST_WORKGROUP );
-         XmlUtil.endElement( strXml, TAG_ASSIGNMENT );
+        XmlUtil.endElement( strXml, TAG_LIST_WORKGROUP );
+        XmlUtil.endElement( strXml, TAG_ASSIGNMENT );
 
-         return strXml.toString( );
+        return strXml.toString( );
     }
 }

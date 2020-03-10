@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -114,7 +114,7 @@ public class TaskAutomaticAssignment extends SimpleTask
                         for ( Response response : formQuestionResponse.getEntryResponse( ) )
                         {
 
-                            if ( response.getField( )!= null && response.getField( ).getIdField( ) == automaticAssignment.getIdField( ) )
+                            if ( response.getField( ) != null && response.getField( ).getIdField( ) == automaticAssignment.getIdField( ) )
                             {
 
                                 listWorkgroup.add( automaticAssignment.getWorkgroupKey( ) );
@@ -133,8 +133,8 @@ public class TaskAutomaticAssignment extends SimpleTask
             }
 
             // update resource workflow
-            ResourceWorkflow resourceWorkflow = _resourceWorkflowService.findByPrimaryKey( resourceHistory.getIdResource( ),
-                    resourceHistory.getResourceType( ), resourceHistory.getWorkflow( ).getId( ) );
+            ResourceWorkflow resourceWorkflow = _resourceWorkflowService.findByPrimaryKey( resourceHistory.getIdResource( ), resourceHistory.getResourceType( ),
+                    resourceHistory.getWorkflow( ).getId( ) );
             resourceWorkflow.setWorkgroups( listWorkgroup );
             _resourceWorkflowService.update( resourceWorkflow );
         }

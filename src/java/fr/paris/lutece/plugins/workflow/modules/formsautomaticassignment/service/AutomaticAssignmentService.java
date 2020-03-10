@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -483,8 +483,8 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
      */
     private String buildMailHtml( Map<String, Object> model, Locale locale )
     {
-        HtmlTemplate t = AppTemplateService.getTemplateFromStringFtl( AppTemplateService.getTemplate( TEMPLATE_TASK_NOTIFICATION_MAIL, locale, model )
-                .getHtml( ), locale, model );
+        HtmlTemplate t = AppTemplateService
+                .getTemplateFromStringFtl( AppTemplateService.getTemplate( TEMPLATE_TASK_NOTIFICATION_MAIL, locale, model ).getHtml( ), locale, model );
 
         return t.getHtml( );
     }
