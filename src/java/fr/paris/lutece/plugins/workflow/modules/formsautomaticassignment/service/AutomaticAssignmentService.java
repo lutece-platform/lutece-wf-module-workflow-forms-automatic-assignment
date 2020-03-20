@@ -563,8 +563,17 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
 
                         if ( model.containsKey( strKey ) )
                         {
-                            model.put( strKey, model.get( strKey ) + CONSTANT_COMMA + strQuestionResponseValue );
-
+                            if ( strQuestionResponseValue != null && !StringUtils.EMPTY.equals( strQuestionResponseValue ) )
+                            {
+                                if ( model.get( strKey ) != null && !StringUtils.EMPTY.equals( model.get( strKey ) ) )
+                                {
+                                    model.put( strKey, model.get( strKey ) + CONSTANT_COMMA + strQuestionResponseValue );
+                                } 
+                                else 
+                                {
+                                    model.put( strKey, strQuestionResponseValue );
+                                }
+                            }
                         }
                         else
                         {
