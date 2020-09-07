@@ -1,6 +1,4 @@
-<#if config?exists&&config.title?exists >
-    <label>${config.title}</label>
-</#if>
+<#if config?exists&&config.title?exists ><h3>${config.title}</h3></#if>
 <#list workgroup_list as workgroup>
      <#if workgroup.config??>
      	<p>${workgroup.config.name}</p>
