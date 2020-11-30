@@ -74,39 +74,39 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
         super.create( config );
 
         TaskAutomaticAssignmentConfig autoAssignConfig = getConfigBean( config );
-
-        if ( autoAssignConfig != null )
+        if ( autoAssignConfig == null )
         {
-            List<WorkgroupConfig> listWorkgroups = autoAssignConfig.getWorkgroups( );
+            return;
+        }
+        List<WorkgroupConfig> listWorkgroups = autoAssignConfig.getWorkgroups( );
 
-            if ( listWorkgroups != null )
+        if ( listWorkgroups != null )
+        {
+            for ( WorkgroupConfig workgroupConfig : listWorkgroups )
             {
-                for ( WorkgroupConfig workgroupConfig : listWorkgroups )
-                {
-                    // Workaround in case of task duplication
-                    workgroupConfig.setIdTask( config.getIdTask( ) );
-                    _workgroupConfigService.create( workgroupConfig, WorkflowUtils.getPlugin( ) );
-                }
+                // Workaround in case of task duplication
+                workgroupConfig.setIdTask( config.getIdTask( ) );
+                _workgroupConfigService.create( workgroupConfig, WorkflowUtils.getPlugin( ) );
             }
+        }
 
-            if ( autoAssignConfig.getListPositionsQuestionFile( ) != null )
+        if ( autoAssignConfig.getListPositionsQuestionFile( ) != null )
+        {
+            for ( Integer nPositionEntryFile : autoAssignConfig.getListPositionsQuestionFile( ) )
             {
-                for ( Integer nPositionEntryFile : autoAssignConfig.getListPositionsQuestionFile( ) )
-                {
-                    _taskAutomaticAssignmentDAO.insertListPositionsEntryFile( config.getIdTask( ), nPositionEntryFile );
-                }
+                _taskAutomaticAssignmentDAO.insertListPositionsEntryFile( config.getIdTask( ), nPositionEntryFile );
             }
+        }
 
-            if ( autoAssignConfig.getListAutomaticAssignments( ) != null )
+        if ( autoAssignConfig.getListAutomaticAssignments( ) != null )
+        {
+            for ( AutomaticAssignment autoAssignment : autoAssignConfig.getListAutomaticAssignments( ) )
             {
-                for ( AutomaticAssignment autoAssignment : autoAssignConfig.getListAutomaticAssignments( ) )
-                {
-                    autoAssignment.setIdTask( config.getIdTask( ) );
+                autoAssignment.setIdTask( config.getIdTask( ) );
 
-                    if ( !_automaticAssignmentService.checkExist( autoAssignment, AutomaticAssignmentPlugin.getPlugin( ) ) )
-                    {
-                        _automaticAssignmentService.create( autoAssignment, AutomaticAssignmentPlugin.getPlugin( ) );
-                    }
+                if ( !_automaticAssignmentService.checkExist( autoAssignment, AutomaticAssignmentPlugin.getPlugin( ) ) )
+                {
+                    _automaticAssignmentService.create( autoAssignment, AutomaticAssignmentPlugin.getPlugin( ) );
                 }
             }
         }
@@ -125,41 +125,42 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
         _workgroupConfigService.removeByTask( config.getIdTask( ), WorkflowUtils.getPlugin( ) );
 
         TaskAutomaticAssignmentConfig autoAssignConfig = getConfigBean( config );
-
-        if ( autoAssignConfig != null )
+        if ( autoAssignConfig == null )
         {
-            List<WorkgroupConfig> listWorkgroups = autoAssignConfig.getWorkgroups( );
+            return;
+        }
 
-            if ( listWorkgroups != null )
+        List<WorkgroupConfig> listWorkgroups = autoAssignConfig.getWorkgroups( );
+
+        if ( listWorkgroups != null )
+        {
+            for ( WorkgroupConfig workgroupConfig : listWorkgroups )
             {
-                for ( WorkgroupConfig workgroupConfig : listWorkgroups )
-                {
-                    _workgroupConfigService.create( workgroupConfig, WorkflowUtils.getPlugin( ) );
-                }
+                _workgroupConfigService.create( workgroupConfig, WorkflowUtils.getPlugin( ) );
             }
+        }
 
-            _taskAutomaticAssignmentDAO.deleteListPositionsEntryFile( config.getIdTask( ) );
+        _taskAutomaticAssignmentDAO.deleteListPositionsEntryFile( config.getIdTask( ) );
 
-            if ( autoAssignConfig.getListPositionsQuestionFile( ) != null )
+        if ( autoAssignConfig.getListPositionsQuestionFile( ) != null )
+        {
+            for ( Integer nPositionEntryFile : autoAssignConfig.getListPositionsQuestionFile( ) )
             {
-                for ( Integer nPositionEntryFile : autoAssignConfig.getListPositionsQuestionFile( ) )
-                {
-                    _taskAutomaticAssignmentDAO.insertListPositionsEntryFile( config.getIdTask( ), nPositionEntryFile );
-                }
+                _taskAutomaticAssignmentDAO.insertListPositionsEntryFile( config.getIdTask( ), nPositionEntryFile );
             }
+        }
 
-            _automaticAssignmentService.removeByTask( config.getIdTask( ), AutomaticAssignmentPlugin.getPlugin( ) );
+        _automaticAssignmentService.removeByTask( config.getIdTask( ), AutomaticAssignmentPlugin.getPlugin( ) );
 
-            if ( autoAssignConfig.getListAutomaticAssignments( ) != null )
+        if ( autoAssignConfig.getListAutomaticAssignments( ) != null )
+        {
+            for ( AutomaticAssignment autoAssignment : autoAssignConfig.getListAutomaticAssignments( ) )
             {
-                for ( AutomaticAssignment autoAssignment : autoAssignConfig.getListAutomaticAssignments( ) )
-                {
-                    autoAssignment.setIdTask( config.getIdTask( ) );
+                autoAssignment.setIdTask( config.getIdTask( ) );
 
-                    if ( !_automaticAssignmentService.checkExist( autoAssignment, AutomaticAssignmentPlugin.getPlugin( ) ) )
-                    {
-                        _automaticAssignmentService.create( autoAssignment, AutomaticAssignmentPlugin.getPlugin( ) );
-                    }
+                if ( !_automaticAssignmentService.checkExist( autoAssignment, AutomaticAssignmentPlugin.getPlugin( ) ) )
+                {
+                    _automaticAssignmentService.create( autoAssignment, AutomaticAssignmentPlugin.getPlugin( ) );
                 }
             }
         }

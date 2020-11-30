@@ -66,24 +66,24 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     @Override
     public synchronized void insert( TaskAutomaticAssignmentConfig config )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, AutomaticAssignmentPlugin.getPlugin( ) );
-
-        int nPos = 0;
-
-        daoUtil.setInt( ++nPos, config.getIdTask( ) );
-        daoUtil.setInt( ++nPos, config.getIdForm( ) );
-        daoUtil.setString( ++nPos, config.getTitle( ) );
-        daoUtil.setBoolean( ++nPos, config.isNotify( ) );
-        daoUtil.setString( ++nPos, config.getMessage( ) );
-        daoUtil.setString( ++nPos, config.getSubject( ) );
-        daoUtil.setString( ++nPos, config.getSenderName( ) );
-        daoUtil.setBoolean( ++nPos, config.isViewFormResponse( ) );
-        daoUtil.setString( ++nPos, config.getLabelLinkViewRecord( ) );
-        daoUtil.setString( ++nPos, config.getRecipientsCc( ) );
-        daoUtil.setString( ++nPos, config.getRecipientsBcc( ) );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, AutomaticAssignmentPlugin.getPlugin( ) ) )
+        {
+            int nPos = 0;
+    
+            daoUtil.setInt( ++nPos, config.getIdTask( ) );
+            daoUtil.setInt( ++nPos, config.getIdForm( ) );
+            daoUtil.setString( ++nPos, config.getTitle( ) );
+            daoUtil.setBoolean( ++nPos, config.isNotify( ) );
+            daoUtil.setString( ++nPos, config.getMessage( ) );
+            daoUtil.setString( ++nPos, config.getSubject( ) );
+            daoUtil.setString( ++nPos, config.getSenderName( ) );
+            daoUtil.setBoolean( ++nPos, config.isViewFormResponse( ) );
+            daoUtil.setString( ++nPos, config.getLabelLinkViewRecord( ) );
+            daoUtil.setString( ++nPos, config.getRecipientsCc( ) );
+            daoUtil.setString( ++nPos, config.getRecipientsBcc( ) );
+    
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -92,26 +92,26 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     @Override
     public void store( TaskAutomaticAssignmentConfig config )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, AutomaticAssignmentPlugin.getPlugin( ) );
-
-        int nPos = 0;
-
-        daoUtil.setInt( ++nPos, config.getIdTask( ) );
-        daoUtil.setInt( ++nPos, config.getIdForm( ) );
-        daoUtil.setString( ++nPos, config.getTitle( ) );
-        daoUtil.setBoolean( ++nPos, config.isNotify( ) );
-        daoUtil.setString( ++nPos, config.getMessage( ) );
-        daoUtil.setString( ++nPos, config.getSubject( ) );
-        daoUtil.setString( ++nPos, config.getSenderName( ) );
-        daoUtil.setBoolean( ++nPos, config.isViewFormResponse( ) );
-        daoUtil.setString( ++nPos, config.getLabelLinkViewRecord( ) );
-        daoUtil.setString( ++nPos, config.getRecipientsCc( ) );
-        daoUtil.setString( ++nPos, config.getRecipientsBcc( ) );
-
-        daoUtil.setInt( ++nPos, config.getIdTask( ) );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, AutomaticAssignmentPlugin.getPlugin( ) ) )
+        {
+            int nPos = 0;
+    
+            daoUtil.setInt( ++nPos, config.getIdTask( ) );
+            daoUtil.setInt( ++nPos, config.getIdForm( ) );
+            daoUtil.setString( ++nPos, config.getTitle( ) );
+            daoUtil.setBoolean( ++nPos, config.isNotify( ) );
+            daoUtil.setString( ++nPos, config.getMessage( ) );
+            daoUtil.setString( ++nPos, config.getSubject( ) );
+            daoUtil.setString( ++nPos, config.getSenderName( ) );
+            daoUtil.setBoolean( ++nPos, config.isViewFormResponse( ) );
+            daoUtil.setString( ++nPos, config.getLabelLinkViewRecord( ) );
+            daoUtil.setString( ++nPos, config.getRecipientsCc( ) );
+            daoUtil.setString( ++nPos, config.getRecipientsBcc( ) );
+    
+            daoUtil.setInt( ++nPos, config.getIdTask( ) );
+    
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -121,32 +121,28 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     public TaskAutomaticAssignmentConfig load( int nIdTask )
     {
         TaskAutomaticAssignmentConfig config = null;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, AutomaticAssignmentPlugin.getPlugin( ) );
-
-        daoUtil.setInt( 1, nIdTask );
-
-        daoUtil.executeQuery( );
-
-        int nPos = 0;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, AutomaticAssignmentPlugin.getPlugin( ) ) )
         {
-            config = new TaskAutomaticAssignmentConfig( );
-            config.setIdTask( daoUtil.getInt( ++nPos ) );
-            config.setIdForm( daoUtil.getInt( ++nPos ) );
-            config.setTitle( daoUtil.getString( ++nPos ) );
-            config.setNotify( daoUtil.getBoolean( ++nPos ) );
-            config.setMessage( daoUtil.getString( ++nPos ) );
-            config.setSubject( daoUtil.getString( ++nPos ) );
-            config.setSenderName( daoUtil.getString( ++nPos ) );
-            config.setViewFormResponse( daoUtil.getBoolean( ++nPos ) );
-            config.setLabelLinkViewRecord( daoUtil.getString( ++nPos ) );
-            config.setRecipientsCc( daoUtil.getString( ++nPos ) );
-            config.setRecipientsBcc( daoUtil.getString( ++nPos ) );
+            daoUtil.setInt( 1, nIdTask );
+            daoUtil.executeQuery( );
+    
+            if ( daoUtil.next( ) )
+            {
+                int nPos = 0;
+                config = new TaskAutomaticAssignmentConfig( );
+                config.setIdTask( daoUtil.getInt( ++nPos ) );
+                config.setIdForm( daoUtil.getInt( ++nPos ) );
+                config.setTitle( daoUtil.getString( ++nPos ) );
+                config.setNotify( daoUtil.getBoolean( ++nPos ) );
+                config.setMessage( daoUtil.getString( ++nPos ) );
+                config.setSubject( daoUtil.getString( ++nPos ) );
+                config.setSenderName( daoUtil.getString( ++nPos ) );
+                config.setViewFormResponse( daoUtil.getBoolean( ++nPos ) );
+                config.setLabelLinkViewRecord( daoUtil.getString( ++nPos ) );
+                config.setRecipientsCc( daoUtil.getString( ++nPos ) );
+                config.setRecipientsBcc( daoUtil.getString( ++nPos ) );
+            }
         }
-
-        daoUtil.free( );
-
         return config;
     }
 
@@ -156,11 +152,11 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     @Override
     public void delete( int nIdTask )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, AutomaticAssignmentPlugin.getPlugin( ) );
-
-        daoUtil.setInt( 1, nIdTask );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, AutomaticAssignmentPlugin.getPlugin( ) ) )
+        {
+            daoUtil.setInt( 1, nIdTask );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -169,18 +165,17 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     @Override
     public List<Integer> loadListPositionsEntryFile( int nIdTask )
     {
-        List<Integer> listIntegerPositionEntryFile = new ArrayList<Integer>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_LIST_POSITION_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin( ) );
-        daoUtil.setInt( 1, nIdTask );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<Integer> listIntegerPositionEntryFile = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_LIST_POSITION_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin( ) ) )
         {
-            listIntegerPositionEntryFile.add( daoUtil.getInt( 1 ) );
+            daoUtil.setInt( 1, nIdTask );
+            daoUtil.executeQuery( );
+    
+            while ( daoUtil.next( ) )
+            {
+                listIntegerPositionEntryFile.add( daoUtil.getInt( 1 ) );
+            }
         }
-
-        daoUtil.free( );
-
         return listIntegerPositionEntryFile;
     }
 
@@ -190,11 +185,11 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     @Override
     public void deleteListPositionsEntryFile( int nIdTask )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_POSITION_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin( ) );
-
-        daoUtil.setInt( 1, nIdTask );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_POSITION_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin( ) ) )
+        {
+            daoUtil.setInt( 1, nIdTask );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -203,11 +198,11 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     @Override
     public void insertListPositionsEntryFile( int nIdTask, Integer nPositionEntryFile )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_POSITION_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin( ) );
-
-        daoUtil.setInt( 1, nIdTask );
-        daoUtil.setInt( 2, nPositionEntryFile );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_POSITION_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin( ) ) )
+        {
+            daoUtil.setInt( 1, nIdTask );
+            daoUtil.setInt( 2, nPositionEntryFile );
+            daoUtil.executeUpdate( );
+        }
     }
 }

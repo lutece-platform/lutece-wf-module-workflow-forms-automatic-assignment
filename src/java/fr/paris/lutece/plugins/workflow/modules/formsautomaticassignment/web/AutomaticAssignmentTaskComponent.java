@@ -68,7 +68,6 @@ import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
@@ -108,11 +107,10 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     private static final String PARAMETER_IS_NOTIFICATION = "is_notify";
     private static final String PARAMETER_SUBJECT = "subject";
     private static final String PARAMETER_SENDER_NAME = "sender_name";
-    private static final String PARAMETER_FORM = "form";
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_ID_TASK = "id_task";
-    private static final String PARAMETER_view_form_response = "view_form_response";
-    private static final String PARAMETER_LABEL_LINK_view_form_response = "label_link_view_form_response";
+    private static final String PARAMETER_VIEW_FORM_RESPONSE = "view_form_response";
+    private static final String PARAMETER_LABEL_LINK_VIEW_FORM_RESPONSE = "label_link_view_form_response";
     private static final String PARAMETER_RECIPIENTS_CC = "recipients_cc";
     private static final String PARAMETER_RECIPIENTS_BCC = "recipients_bcc";
     private static final String PARAMETER_LIST_POSITION_QUESTION_FILE_CHECKED = "list_position_question_file_checked";
@@ -122,7 +120,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     private static final String FIELD_MAILINGLIST_SUBJECT = "module.workflow.formsautomaticassignment.task_config.label_mailinglist_subject";
     private static final String FIELD_MAILINGLIST_MESSAGE = "module.workflow.formsautomaticassignment.task_config.label_mailinglist_message";
     private static final String FIELD_MAILINGLIST_SENDER_NAME = "module.workflow.formsautomaticassignment.task_config.label_mailinglist_sender_name";
-    private static final String FIELD_LABEL_LINK_view_form_response = "module.workflow.formsautomaticassignment.task_config.label_label_link_view_form_response";
+    private static final String FIELD_LABEL_LINK_VIEW_FORM_RESPONSE = "module.workflow.formsautomaticassignment.task_config.label_label_link_view_form_response";
 
     private static final String PROPERTY_SELECT_EMPTY_CHOICE = "module.workflow.assignment.task_assignment_config.label_empty_choice";
 
@@ -163,8 +161,8 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
         String strSubject = request.getParameter( PARAMETER_SUBJECT );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String [ ] tabWorkgroups = request.getParameterValues( PARAMETER_WORKGROUPS );
-        String strViewRecord = request.getParameter( PARAMETER_view_form_response );
-        String strLabelLinkViewRecord = request.getParameter( PARAMETER_LABEL_LINK_view_form_response );
+        String strViewRecord = request.getParameter( PARAMETER_VIEW_FORM_RESPONSE );
+        String strLabelLinkViewRecord = request.getParameter( PARAMETER_LABEL_LINK_VIEW_FORM_RESPONSE );
         String strRecipientsCc = request.getParameter( PARAMETER_RECIPIENTS_CC );
         String strRecipientsBcc = request.getParameter( PARAMETER_RECIPIENTS_BCC );
         String [ ] tabSelectedPositionsEntryFile = request.getParameterValues( PARAMETER_LIST_POSITION_QUESTION_FILE_CHECKED );
@@ -192,7 +190,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
 
         if ( StringUtils.isNotBlank( strViewRecord ) && StringUtils.isBlank( strLabelLinkViewRecord ) )
         {
-            strError = FIELD_LABEL_LINK_view_form_response;
+            strError = FIELD_LABEL_LINK_VIEW_FORM_RESPONSE;
         }
 
         if ( !strError.equals( WorkflowUtils.EMPTY_STRING ) )
@@ -210,7 +208,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
         }
 
         TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( task.getId( ) );
-        Boolean bCreate = false;
+        boolean bCreate = false;
 
         if ( config == null )
         {
@@ -220,7 +218,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
         }
 
         // Add workgroups
-        List<WorkgroupConfig> listWorkgroupConfig = new ArrayList<WorkgroupConfig>( );
+        List<WorkgroupConfig> listWorkgroupConfig = new ArrayList<>( );
         WorkgroupConfig workgroupConfig;
 
         if ( tabWorkgroups != null )
@@ -276,7 +274,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
 
         if ( ( tabSelectedPositionsEntryFile != null ) && ( tabSelectedPositionsEntryFile.length > 0 ) )
         {
-            List<Integer> listSelectedPositionEntryFile = new ArrayList<Integer>( );
+            List<Integer> listSelectedPositionEntryFile = new ArrayList<>( );
 
             for ( int i = 0; i < tabSelectedPositionsEntryFile.length; i++ )
             {
@@ -309,9 +307,9 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     public String getDisplayConfigForm( HttpServletRequest request, Locale locale, ITask task )
     {
 
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<>( );
         ReferenceList formsRefList = FormHome.getFormsReferenceList( );
-        List<Map<String, Object>> listWorkgroups = new ArrayList<Map<String, Object>>( );
+        List<Map<String, Object>> listWorkgroups = new ArrayList<>( );
         String strNothing = StringUtils.EMPTY;
 
         TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( task.getId( ) );
@@ -324,7 +322,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
 
         for ( AdminWorkgroup workgroup : AdminWorkgroupHome.findAll( ) )
         {
-            Map<String, Object> workgroupsItem = new HashMap<String, Object>( );
+            Map<String, Object> workgroupsItem = new HashMap<>( );
             workgroupsItem.put( MARK_ITEM, workgroup );
 
             if ( ( config != null ) && ( config.getWorkgroups( ) != null ) )
@@ -385,36 +383,38 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     @Override
     public String getDisplayTaskInformation( int nIdHistory, HttpServletRequest request, Locale locale, ITask task )
     {
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<>( );
         String strNothing = I18nService.getLocalizedString( PROPERTY_SELECT_EMPTY_CHOICE, locale );
         TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( task.getId( ) );
         List<AssignmentHistory> listAssignmentHistory = _assignmentHistoryService.getListByHistory( nIdHistory, task.getId( ), WorkflowUtils.getPlugin( ) );
         ReferenceList refWorkgroups = AdminWorkgroupService.getUserWorkgroups( AdminUserService.getAdminUser( request ), locale );
 
-        List<HashMap<String, Object>> listWorkgroups = new ArrayList<HashMap<String, Object>>( );
+        List<HashMap<String, Object>> listWorkgroups = new ArrayList<>( );
 
         for ( ReferenceItem referenceItem : refWorkgroups )
         {
-            if ( !referenceItem.getCode( ).equals( AdminWorkgroupService.ALL_GROUPS ) )
+            if ( referenceItem.getCode( ).equals( AdminWorkgroupService.ALL_GROUPS ) )
             {
-                HashMap<String, Object> workgroupsItem = new HashMap<String, Object>( );
-                workgroupsItem.put( MARK_ITEM, referenceItem );
+                continue;
+            }
+            
+            HashMap<String, Object> workgroupsItem = new HashMap<>( );
+            workgroupsItem.put( MARK_ITEM, referenceItem );
 
-                if ( ( config != null ) && ( config.getWorkgroups( ) != null ) )
+            if ( ( config != null ) && ( config.getWorkgroups( ) != null ) )
+            {
+                for ( AssignmentHistory assignmentHistory : listAssignmentHistory )
                 {
-                    for ( AssignmentHistory assignmentHistory : listAssignmentHistory )
+                    if ( referenceItem.getCode( ).equals( assignmentHistory.getWorkgroup( ) ) )
                     {
-                        if ( referenceItem.getCode( ).equals( assignmentHistory.getWorkgroup( ) ) )
-                        {
-                            workgroupsItem.put( MARK_CONFIG, referenceItem );
+                        workgroupsItem.put( MARK_CONFIG, referenceItem );
 
-                            break;
-                        }
+                        break;
                     }
                 }
-
-                listWorkgroups.add( workgroupsItem );
             }
+
+            listWorkgroups.add( workgroupsItem );
         }
 
         ReferenceList refMailingList = new ReferenceList( );
@@ -445,16 +445,13 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
 
         for ( ReferenceItem referenceItem : AdminWorkgroupService.getUserWorkgroups( AdminUserService.getAdminUser( request ), locale ) )
         {
-            if ( !referenceItem.getCode( ).equals( AdminWorkgroupService.ALL_GROUPS ) )
+            if ( !referenceItem.getCode( ).equals( AdminWorkgroupService.ALL_GROUPS ) && listAssignmentHistory != null )
             {
-                if ( listAssignmentHistory != null )
+                for ( AssignmentHistory assignmentHistory : listAssignmentHistory )
                 {
-                    for ( AssignmentHistory assignmentHistory : listAssignmentHistory )
+                    if ( referenceItem.getCode( ).equals( assignmentHistory.getWorkgroup( ) ) )
                     {
-                        if ( referenceItem.getCode( ).equals( assignmentHistory.getWorkgroup( ) ) )
-                        {
-                            XmlUtil.addElementHtml( strXml, TAG_WORKGROUP, referenceItem.getName( ) );
-                        }
+                        XmlUtil.addElementHtml( strXml, TAG_WORKGROUP, referenceItem.getName( ) );
                     }
                 }
             }

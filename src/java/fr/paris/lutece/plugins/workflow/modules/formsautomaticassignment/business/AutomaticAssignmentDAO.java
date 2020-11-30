@@ -68,27 +68,20 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     @Override
     public boolean checkExist( AutomaticAssignment assign, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_CHECK_EXIST, plugin );
-
-        daoUtil.setInt( 1, assign.getIdTask( ) );
-        daoUtil.setInt( 2, assign.getIdQuestion( ) );
-        daoUtil.setInt( 3, assign.getIdField( ) );
-        daoUtil.setString( 4, assign.getWorkgroupKey( ) );
-
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_CHECK_EXIST, plugin ) )
         {
-            if ( daoUtil.getInt( 1 ) > 0 )
+            daoUtil.setInt( 1, assign.getIdTask( ) );
+            daoUtil.setInt( 2, assign.getIdQuestion( ) );
+            daoUtil.setInt( 3, assign.getIdField( ) );
+            daoUtil.setString( 4, assign.getWorkgroupKey( ) );
+    
+            daoUtil.executeQuery( );
+    
+            if ( daoUtil.next( ) && daoUtil.getInt( 1 ) > 0 )
             {
-                daoUtil.free( );
-
                 return true;
             }
         }
-
-        daoUtil.free( );
-
         return false;
     }
 
@@ -98,15 +91,15 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     @Override
     public void delete( AutomaticAssignment assign, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-
-        daoUtil.setInt( 1, assign.getIdTask( ) );
-        daoUtil.setInt( 2, assign.getIdQuestion( ) );
-        daoUtil.setInt( 3, assign.getIdField( ) );
-        daoUtil.setString( 4, assign.getWorkgroupKey( ) );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, assign.getIdTask( ) );
+            daoUtil.setInt( 2, assign.getIdQuestion( ) );
+            daoUtil.setInt( 3, assign.getIdField( ) );
+            daoUtil.setString( 4, assign.getWorkgroupKey( ) );
+    
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -115,12 +108,11 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     @Override
     public void deleteByTask( int nIdTask, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_TASK, plugin );
-
-        daoUtil.setInt( 1, nIdTask );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_TASK, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdTask );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -129,17 +121,17 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     @Override
     public synchronized void insert( AutomaticAssignment assign, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
-
-        int nPos = 0;
-
-        daoUtil.setInt( ++nPos, assign.getIdTask( ) );
-        daoUtil.setInt( ++nPos, assign.getIdQuestion( ) );
-        daoUtil.setInt( ++nPos, assign.getIdField( ) );
-        daoUtil.setString( ++nPos, assign.getWorkgroupKey( ) );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin ) )
+        {
+            int nPos = 0;
+    
+            daoUtil.setInt( ++nPos, assign.getIdTask( ) );
+            daoUtil.setInt( ++nPos, assign.getIdQuestion( ) );
+            daoUtil.setInt( ++nPos, assign.getIdField( ) );
+            daoUtil.setString( ++nPos, assign.getWorkgroupKey( ) );
+    
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -148,28 +140,26 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     @Override
     public List<AutomaticAssignment> loadByTaskByQuestion( int nIdTask, int nIdQuestion, Plugin plugin )
     {
-        List<AutomaticAssignment> assignmentList = new ArrayList<AutomaticAssignment>( );
+        List<AutomaticAssignment> assignmentList = new ArrayList<>( );
         AutomaticAssignment assignment = null;
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_TASK_BY_QUESTION, plugin );
-
-        daoUtil.setInt( 1, nIdTask );
-        daoUtil.setInt( 2, nIdQuestion );
-
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_TASK_BY_QUESTION, plugin ) )
         {
-            assignment = new AutomaticAssignment( );
-            assignment.setIdTask( nIdTask );
-            assignment.setIdQuestion( nIdQuestion );
-            assignment.setIdField( daoUtil.getInt( CONSTANT_VALUE ) );
-            assignment.setWorkgroupKey( daoUtil.getString( CONSTANT_WORKGROUP ) );
-            assignmentList.add( assignment );
+            daoUtil.setInt( 1, nIdTask );
+            daoUtil.setInt( 2, nIdQuestion );
+    
+            daoUtil.executeQuery( );
+    
+            while ( daoUtil.next( ) )
+            {
+                assignment = new AutomaticAssignment( );
+                assignment.setIdTask( nIdTask );
+                assignment.setIdQuestion( nIdQuestion );
+                assignment.setIdField( daoUtil.getInt( CONSTANT_VALUE ) );
+                assignment.setWorkgroupKey( daoUtil.getString( CONSTANT_WORKGROUP ) );
+                assignmentList.add( assignment );
+            }
         }
-
-        daoUtil.free( );
-
         return assignmentList;
     }
 
@@ -179,27 +169,25 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     @Override
     public List<AutomaticAssignment> loadByTask( int nIdTask, Plugin plugin )
     {
-        List<AutomaticAssignment> assignmentList = new ArrayList<AutomaticAssignment>( );
+        List<AutomaticAssignment> assignmentList = new ArrayList<>( );
         AutomaticAssignment assignment = null;
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_TASK, plugin );
-
-        daoUtil.setInt( 1, nIdTask );
-
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_TASK, plugin ) )
         {
-            assignment = new AutomaticAssignment( );
-            assignment.setIdTask( nIdTask );
-            assignment.setIdQuestion( daoUtil.getInt( CONSTANT_ID_QUESTION ) );
-            assignment.setIdField( daoUtil.getInt( CONSTANT_VALUE ) );
-            assignment.setWorkgroupKey( daoUtil.getString( CONSTANT_WORKGROUP ) );
-            assignmentList.add( assignment );
+            daoUtil.setInt( 1, nIdTask );
+    
+            daoUtil.executeQuery( );
+    
+            while ( daoUtil.next( ) )
+            {
+                assignment = new AutomaticAssignment( );
+                assignment.setIdTask( nIdTask );
+                assignment.setIdQuestion( daoUtil.getInt( CONSTANT_ID_QUESTION ) );
+                assignment.setIdField( daoUtil.getInt( CONSTANT_VALUE ) );
+                assignment.setWorkgroupKey( daoUtil.getString( CONSTANT_WORKGROUP ) );
+                assignmentList.add( assignment );
+            }
         }
-
-        daoUtil.free( );
-
         return assignmentList;
     }
 
@@ -209,21 +197,19 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     @Override
     public List<Integer> getIdQuestionsListByTask( int nIdTask, Plugin plugin )
     {
-        List<Integer> idEntriesList = new ArrayList<Integer>( );
+        List<Integer> idEntriesList = new ArrayList<>( );
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ID_QUESTION_BY_TASK, plugin );
-
-        daoUtil.setInt( 1, nIdTask );
-
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ID_QUESTION_BY_TASK, plugin ) )
         {
-            idEntriesList.add( daoUtil.getInt( CONSTANT_ID_QUESTION ) );
+            daoUtil.setInt( 1, nIdTask );
+    
+            daoUtil.executeQuery( );
+    
+            while ( daoUtil.next( ) )
+            {
+                idEntriesList.add( daoUtil.getInt( CONSTANT_ID_QUESTION ) );
+            }
         }
-
-        daoUtil.free( );
-
         return idEntriesList;
     }
 }

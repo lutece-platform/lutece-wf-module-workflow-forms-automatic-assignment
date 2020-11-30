@@ -157,8 +157,8 @@ public class AutomaticAssignment
         return _nIdQuestion;
     }
 
-    public void setIdQuestion( int _nIdQuestion )
+    public void setIdQuestion( int nIdQuestion )
     {
-        this._nIdQuestion = _nIdQuestion;
+        this._nIdQuestion = nIdQuestion;
     }
 }

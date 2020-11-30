@@ -95,49 +95,46 @@ public class TaskAutomaticAssignment extends SimpleTask
         ResourceHistory resourceHistory = _resourceHistoryService.findByPrimaryKey( nIdResourceHistory );
 
         FormResponse formResponse = FormResponseHome.findByPrimaryKey( resourceHistory.getIdResource( ) );
+        if ( formResponse == null )
+        {
+            return;   
+        }
 
-        List<String> listWorkgroup = new ArrayList<String>( );
+        List<String> listWorkgroup = new ArrayList<>( );
 
         List<AutomaticAssignment> automaticAssignementList = _automaticAssignmentService.findByTask( this.getId( ), autoAssignPlugin );
+        List<FormQuestionResponse> listFormQuestionResponse = FormQuestionResponseHome.getFormQuestionResponseListByFormResponse( formResponse.getId( ) );
 
-        if ( formResponse != null )
+        for ( FormQuestionResponse formQuestionResponse : listFormQuestionResponse )
         {
-            List<FormQuestionResponse> listFormQuestionResponse = FormQuestionResponseHome.getFormQuestionResponseListByFormResponse( formResponse.getId( ) );
-
-            for ( FormQuestionResponse formQuestionResponse : listFormQuestionResponse )
+            for ( AutomaticAssignment automaticAssignment : automaticAssignementList )
             {
-                for ( AutomaticAssignment automaticAssignment : automaticAssignementList )
+                if ( formQuestionResponse.getQuestion( ).getId( ) == automaticAssignment.getIdQuestion( ) )
                 {
-
-                    if ( formQuestionResponse.getQuestion( ).getId( ) == automaticAssignment.getIdQuestion( ) )
+                    for ( Response response : formQuestionResponse.getEntryResponse( ) )
                     {
-                        for ( Response response : formQuestionResponse.getEntryResponse( ) )
+                        if ( response.getField( ) != null && response.getField( ).getIdField( ) == automaticAssignment.getIdField( ) )
                         {
-
-                            if ( response.getField( ) != null && response.getField( ).getIdField( ) == automaticAssignment.getIdField( ) )
-                            {
-
-                                listWorkgroup.add( automaticAssignment.getWorkgroupKey( ) );
-                            }
+                            listWorkgroup.add( automaticAssignment.getWorkgroupKey( ) );
                         }
                     }
                 }
-
             }
 
-            TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( this.getId( ) );
-
-            if ( ( config != null ) && config.isNotify( ) )
-            {
-                _automaticAssignmentService.notify( listFormQuestionResponse, config, listWorkgroup, resourceHistory, request, locale, this );
-            }
-
-            // update resource workflow
-            ResourceWorkflow resourceWorkflow = _resourceWorkflowService.findByPrimaryKey( resourceHistory.getIdResource( ), resourceHistory.getResourceType( ),
-                    resourceHistory.getWorkflow( ).getId( ) );
-            resourceWorkflow.setWorkgroups( listWorkgroup );
-            _resourceWorkflowService.update( resourceWorkflow );
         }
+
+        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( this.getId( ) );
+
+        if ( ( config != null ) && config.isNotify( ) )
+        {
+            _automaticAssignmentService.notify( listFormQuestionResponse, config, listWorkgroup, resourceHistory, request, locale, this );
+        }
+
+        // update resource workflow
+        ResourceWorkflow resourceWorkflow = _resourceWorkflowService.findByPrimaryKey( resourceHistory.getIdResource( ), resourceHistory.getResourceType( ),
+                resourceHistory.getWorkflow( ).getId( ) );
+        resourceWorkflow.setWorkgroups( listWorkgroup );
+        _resourceWorkflowService.update( resourceWorkflow );
     }
 
     /**

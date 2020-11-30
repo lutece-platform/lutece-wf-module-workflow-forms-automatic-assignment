@@ -69,6 +69,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
 {
+    private static final long serialVersionUID = -8429549377694294789L;
     private static final String TEMPLATE_MODIFY_QUESTION_ASSIGNMENT = "admin/plugins/workflow/modules/formsautomaticassignment/modify_question_assignment.html";
     private static final String JSP_MODIFY_TASK = "jsp/admin/plugins/workflow/ModifyTask.jsp";
     private static final String JSP_MODIFY_QUESTION_ASSIGNMENT = "jsp/admin/plugins/workflow/modules/formsautomaticassignment/ModifyQuestionAssignment.jsp";
@@ -103,7 +104,7 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
         List<AutomaticAssignment> assignmentList;
         Plugin autoAssignPlugin = PluginService.getPlugin( AutomaticAssignmentPlugin.PLUGIN_NAME );
 
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         int nIdTask = -1;
         int nIdQuestion = -1;
 

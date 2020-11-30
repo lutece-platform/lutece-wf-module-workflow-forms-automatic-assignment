@@ -83,7 +83,6 @@ import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.mail.FileAttachment;
-import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.util.xml.XmlUtil;
 
 /**
@@ -101,7 +100,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
     // MARKS
     private static final String MARK_MESSAGE = "message";
     private static final String MARK_QUESTION_MARKER = "question_";
-    private static final String MARK_LINK_view_form_response = "link_view_form_response";
+    private static final String MARK_LINK_VIEW_FORM_RESPONSE = "link_view_form_response";
 
     // PROPERTIES
     private static final String PROPERTY_LUTECE_ADMIN_PROD_URL = "lutece.admin.prod.url";
@@ -109,9 +108,6 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
     private static final String PROPERTY_LUTECE_PROD_URL = "lutece.prod.url";
     private static final String PROPERTY_ENTRIES_TYPE_ALLOWED = "workflow-forms-automatic-assignment.entriesTypeAllowed";
     private static final String PROPERTY_ENTRIES_TYPE_FILES = "workflow-forms-automatic-assignment.entriesTypeFiles";
-    // PARAMETERS
-    private static final String PARAMETER_ID_FORM = "id_form";
-    private static final String PARAMETER_ID_FORM_RESPONSE = "id_form_response";
 
     // MESSAGES
     private static final String PROPERTY_MAIL_SENDER_NAME = "module.workflow.assignment.task_assignment_config.mailSenderName";
@@ -230,7 +226,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
 
         TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( nIdTask );
 
-        List<Question> listQuestions = new ArrayList<Question>( );
+        List<Question> listQuestions = new ArrayList<>( );
 
         if ( config != null )
         {
@@ -270,30 +266,27 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
     @Override
     public List<FileAttachment> getFilesAttachment( TaskAutomaticAssignmentConfig config, List<FormQuestionResponse> listFormQuestionResponse )
     {
-        List<FileAttachment> listFileAttachment = null;
-
-        if ( ( config.getListPositionsQuestionFile( ) != null ) && !config.getListPositionsQuestionFile( ).isEmpty( ) )
+        List<FileAttachment> listFileAttachment = new ArrayList<>( );
+        if ( CollectionUtils.isEmpty( config.getListPositionsQuestionFile( ) ) )
         {
-            listFileAttachment = new ArrayList<FileAttachment>( );
+            return listFileAttachment;
+        }
+        for ( Integer nPositionEntryFile : config.getListPositionsQuestionFile( ) )
+        {
+            List<File> listFiles = getFiles( nPositionEntryFile, listFormQuestionResponse );
 
-            for ( Integer nPositionEntryFile : config.getListPositionsQuestionFile( ) )
+            if ( CollectionUtils.isNotEmpty( listFiles ) )
             {
-                List<File> listFiles = getFiles( nPositionEntryFile, listFormQuestionResponse );
-
-                if ( ( listFiles != null ) && !listFiles.isEmpty( ) )
+                for ( File file : listFiles )
                 {
-                    for ( File file : listFiles )
+                    if ( ( file != null ) && ( file.getPhysicalFile( ) != null ) )
                     {
-                        if ( ( file != null ) && ( file.getPhysicalFile( ) != null ) )
-                        {
-                            FileAttachment fileAttachment = new FileAttachment( file.getTitle( ), file.getPhysicalFile( ).getValue( ), file.getMimeType( ) );
-                            listFileAttachment.add( fileAttachment );
-                        }
+                        FileAttachment fileAttachment = new FileAttachment( file.getTitle( ), file.getPhysicalFile( ).getValue( ), file.getMimeType( ) );
+                        listFileAttachment.add( fileAttachment );
                     }
                 }
             }
         }
-
         return listFileAttachment;
     }
 
@@ -318,7 +311,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
         String strEmailContent = buildMailHtml( model, locale );
         String strSubject = buildSubjectHtml( config, model, locale );
 
-        List<FileAttachment> listFileAttachments = getListFileAttachments( config, listFormQuestionResponse );
+        List<FileAttachment> listFileAttachments = getFilesAttachment( config, listFormQuestionResponse );
 
         // Notify the mailings list associated to each workgroup
         for ( String workGroup : listWorkgroup )
@@ -331,24 +324,24 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
             _assignmentHistoryService.create( history, workflowPlugin );
 
             WorkgroupConfig workgroupConfig = _workgroupConfigService.findByPrimaryKey( task.getId( ), workGroup, workflowPlugin );
-
-            if ( ( workgroupConfig != null ) && ( workgroupConfig.getIdMailingList( ) != WorkflowUtils.CONSTANT_ID_NULL ) )
+            if ( workgroupConfig == null || workgroupConfig.getIdMailingList( ) == WorkflowUtils.CONSTANT_ID_NULL )
             {
-                Collection<Recipient> listRecipients = AdminMailingListService.getRecipients( workgroupConfig.getIdMailingList( ) );
-
-                // Send Mail
-                for ( Recipient recipient : listRecipients )
+                continue;
+            }
+            
+            Collection<Recipient> listRecipients = AdminMailingListService.getRecipients( workgroupConfig.getIdMailingList( ) );
+            // Send Mail
+            for ( Recipient recipient : listRecipients )
+            {
+                if ( CollectionUtils.isNotEmpty( listFileAttachments ) )
                 {
-                    if ( ( listFileAttachments != null ) && !listFileAttachments.isEmpty( ) )
-                    {
-                        MailService.sendMailMultipartHtml( recipient.getEmail( ), null, null, strSenderName, strSenderEmail, strSubject, strEmailContent, null,
-                                listFileAttachments );
-                    }
-                    else
-                    {
-                        // Build the mail message
-                        MailService.sendMailHtml( recipient.getEmail( ), strSenderName, strSenderEmail, strSubject, strEmailContent );
-                    }
+                    MailService.sendMailMultipartHtml( recipient.getEmail( ), null, null, strSenderName, strSenderEmail, strSubject, strEmailContent, null,
+                            listFileAttachments );
+                }
+                else
+                {
+                    // Build the mail message
+                    MailService.sendMailHtml( recipient.getEmail( ), strSenderName, strSenderEmail, strSubject, strEmailContent );
                 }
             }
         }
@@ -356,23 +349,25 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
         // Notify recipients
         boolean bHasRecipients = ( StringUtils.isNotBlank( config.getRecipientsBcc( ) ) || StringUtils.isNotBlank( config.getRecipientsCc( ) ) );
 
-        if ( bHasRecipients )
+        if ( !bHasRecipients )
         {
-            if ( ( listFileAttachments != null ) && !listFileAttachments.isEmpty( ) )
-            {
-                MailService.sendMailMultipartHtml( null, config.getRecipientsCc( ), config.getRecipientsBcc( ), strSenderName, strSenderEmail, strSubject,
-                        strEmailContent, null, listFileAttachments );
-            }
-            else
-            {
-                MailService.sendMailHtml( null, config.getRecipientsCc( ), config.getRecipientsBcc( ), config.getSenderName( ), strSenderEmail, strSubject,
-                        strEmailContent );
-            }
+            return;
+        }
+        
+        if ( CollectionUtils.isNotEmpty( listFileAttachments ) )
+        {
+            MailService.sendMailMultipartHtml( null, config.getRecipientsCc( ), config.getRecipientsBcc( ), strSenderName, strSenderEmail, strSubject,
+                    strEmailContent, null, listFileAttachments );
+        }
+        else
+        {
+            MailService.sendMailHtml( null, config.getRecipientsCc( ), config.getRecipientsBcc( ), config.getSenderName( ), strSenderEmail, strSubject,
+                    strEmailContent );
         }
     }
 
     // PRIVATE METHODS
-
+    
     /**
      * Fill the list of entry types
      * 
@@ -382,7 +377,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
      */
     private static List<Integer> fillListEntryTypes( String strPropertyEntryTypes )
     {
-        List<Integer> listEntryTypes = new ArrayList<Integer>( );
+        List<Integer> listEntryTypes = new ArrayList<>( );
         String strEntryTypes = AppPropertiesService.getProperty( strPropertyEntryTypes );
 
         if ( StringUtils.isNotBlank( strEntryTypes ) )
@@ -448,7 +443,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
      */
     private String getBaseUrl( HttpServletRequest request )
     {
-        String strBaseUrl = StringUtils.EMPTY;
+        String strBaseUrl;
 
         if ( request != null )
         {
@@ -506,20 +501,6 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
     }
 
     /**
-     * Get the list of file attachments
-     * 
-     * @param config
-     *            the config
-     * @param resourceHistory
-     *            the resource history
-     * @return a list of file attachments
-     */
-    private List<FileAttachment> getListFileAttachments( TaskAutomaticAssignmentConfig config, List<FormQuestionResponse> listFormQuestionResponse )
-    {
-        return getFilesAttachment( config, listFormQuestionResponse );
-    }
-
-    /**
      * Build the model for the mail content and for the subject
      * 
      * @param config
@@ -535,7 +516,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
     private Map<String, Object> buildModel( TaskAutomaticAssignmentConfig config, ResourceHistory resourceHistory,
             List<FormQuestionResponse> listFormQuestionResponse, HttpServletRequest request, Locale locale )
     {
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<>( );
 
         List<Question> allQuestions = _automaticAssignmentService.getAllQuestions( config.getIdTask( ) );
 
@@ -543,7 +524,6 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
 
         for ( Question questionAuthorized : allQuestions )
         {
-
             String strKey = MARK_QUESTION_MARKER + questionAuthorized.getId( );
             for ( FormQuestionResponse formQuestionResponse : listFormQuestionResponse )
             {
@@ -602,18 +582,18 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
             String strFinalUrl = mrecapUrl.format( recapParams );
 
             StringBuffer sbLinkHtml = new StringBuffer( );
-            Map<String, String> mapParams = new HashMap<String, String>( );
+            Map<String, String> mapParams = new HashMap<>( );
             mapParams.put( ATTRIBUTE_HREF, strFinalUrl );
             XmlUtil.beginElement( sbLinkHtml, TAG_A, mapParams );
             sbLinkHtml.append( config.getLabelLinkViewRecord( ) );
             XmlUtil.endElement( sbLinkHtml, TAG_A );
 
-            Map<String, Object> modelTmp = new HashMap<String, Object>( );
-            modelTmp.put( MARK_LINK_view_form_response, strFinalUrl );
+            Map<String, Object> modelTmp = new HashMap<>( );
+            modelTmp.put( MARK_LINK_VIEW_FORM_RESPONSE, strFinalUrl );
             strLinkViewRecordHtml = AppTemplateService.getTemplateFromStringFtl( sbLinkHtml.toString( ), locale, modelTmp ).getHtml( );
         }
 
-        model.put( MARK_LINK_view_form_response, strLinkViewRecordHtml );
+        model.put( MARK_LINK_VIEW_FORM_RESPONSE, strLinkViewRecordHtml );
         model.put( MARK_MESSAGE, config.getMessage( ) );
 
         return model;

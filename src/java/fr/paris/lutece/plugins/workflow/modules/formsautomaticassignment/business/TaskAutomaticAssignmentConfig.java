@@ -340,8 +340,8 @@ public class TaskAutomaticAssignmentConfig extends TaskConfig
         return _questionList;
     }
 
-    public void setQuestionList( List<Integer> _questionList )
+    public void setQuestionList( List<Integer> questionList )
     {
-        this._questionList = _questionList;
+        this._questionList = questionList;
     }
 }
