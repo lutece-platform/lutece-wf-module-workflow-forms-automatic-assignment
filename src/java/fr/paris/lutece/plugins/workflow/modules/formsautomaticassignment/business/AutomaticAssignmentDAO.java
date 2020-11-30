@@ -46,6 +46,7 @@ import java.util.List;
  */
 public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
 {
+    public static final String BEAN_NAME = "workflow-formsautomaticassignment.automaticAssignmentDAO";
     private static final String SQL_QUERY_FIND_BY_TASK_BY_QUESTION = "SELECT value, workgroup_key "
             + " FROM workflow_forms_auto_assignment WHERE id_task = ? AND id_question = ?";
     private static final String SQL_QUERY_FIND_BY_TASK = "SELECT value, workgroup_key, id_question " + " FROM workflow_forms_auto_assignment WHERE id_task = ?";
