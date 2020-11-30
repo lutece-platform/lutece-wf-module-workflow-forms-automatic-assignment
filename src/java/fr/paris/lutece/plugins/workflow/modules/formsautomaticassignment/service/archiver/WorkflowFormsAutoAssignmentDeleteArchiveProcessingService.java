@@ -54,7 +54,7 @@ public class WorkflowFormsAutoAssignmentDeleteArchiveProcessingService extends A
 
     @Inject
     private IAssignmentHistoryService _assignmentHistoryService;
-    
+
     @Override
     public void archiveResource( ResourceWorkflow resourceWorkflow )
     {
