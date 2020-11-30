@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.busine
 
 import java.util.List;
 
-import fr.paris.lutece.plugins.workflow.modules.alertforms.business.AlertDAO;
 import fr.paris.lutece.plugins.workflow.service.WorkflowPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
