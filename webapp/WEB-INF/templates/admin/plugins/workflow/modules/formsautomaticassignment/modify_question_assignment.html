@@ -1,31 +1,30 @@
 <@box style='primary'>
-	<@boxHeader title='#i18n{module.workflow.formsautomaticassignment.task_config.label.question} ${question.title} <small>#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.comment}</small>' boxTools=true>
-		<@tform type='inline' action="${url}" >
-			<input type="hidden" name="id_task" value="${id_task}">
-			<@button type='submit' buttonIcon='times' title='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.back_button}' cancel=true/>
+	<@boxHeader title='#i18n{module.workflow.formsautomaticassignment.task_config.label.question} ${question.title} <small>#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.comment}</small>'>
+		<@tform type='inline' action='${url}'>
+			<@input type='hidden' name='id_task' value='${id_task}' size='sm' />
+			<@button type='submit' buttonIcon='times' title='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.back_button}' hideTitle=['xs','sm'] size='sm' cancel=true />
 		</@tform>
 	</@boxHeader>
 	<@boxBody>
-	<@tform type='inline' action='jsp/admin/plugins/workflow/modules/formsautomaticassignment/DoAddAutomaticAssignment.jsp'>	
-		<input type="hidden" name="id_task" value="${id_task}">		
+	<@tform action='jsp/admin/plugins/workflow/modules/formsautomaticassignment/DoAddAutomaticAssignment.jsp'>	
+		<@input type='hidden' name='id_task' value='${id_task}' />		
 		<#if question?? && question.entry?? >
-			<input type="hidden" name="id_question" value="${question.id}">
-			<@formGroup rows=2 labelFor='value' labelKey='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.question_value} ${question.title}'>		 	
+			<@input type='hidden' name='id_question' value='${question.id}' />
+			<@formGroup labelFor='value' labelKey='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.question_value} ${question.title}'>		 	
 				<@select name="value">
 					<#list question.entry.fields as field>
 						<option value="${field.idField!}">${field.title!}</option>
 					</#list>
 				</@select>
 			</@formGroup>
-			<@formGroup rows=2 labelFor='workgroup' labelKey='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.workgroups}'>		 	
-				<@select name='workgroup'>
+			<@formGroup labelFor='workgroup' labelKey='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.workgroups}'>		<@select name='workgroup'>
 					<#list workgroup_list as workgroup>
-						<option  value="${workgroup.key}">${workgroup.description}</option>
+						<option value="${workgroup.key}">${workgroup.description}</option>
 					</#list>
 				</@select>
 			</@formGroup>
-			<@formGroup rows=2>
-				<@button type="submit" buttonIcon='plus' title='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.add_button}' />
+			<@formGroup>
+				<@button type='submit' buttonIcon='plus' title='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.add_button}' />
 			</@formGroup>
 			<@table>
 				<thead>
@@ -38,13 +37,13 @@
 				<tbody>
 				<#if assignment_list?? >
 					<#list assignment_list as assignment>
-					<tr>
-						<td>${assignment.fieldValue!}</td>
-						<td>${assignment.workgroupDescription!}</td>
-						<td> 
-							<@aButton href="jsp/admin/plugins/workflow/modules/formsautomaticassignment/DeleteAssignment.jsp?workgroup=${assignment.workgroupKey}&value=${assignment.idField}&id_task=${id_task}&id_question=${question.id}" color='danger' buttonIcon='trash' />
-						</td>
-					</tr>
+					<@tr>
+						<@td>${assignment.fieldValue!}</@td>
+						<@td>${assignment.workgroupDescription!}</@td>
+						<@td> 
+							<@aButton href='jsp/admin/plugins/workflow/modules/formsautomaticassignment/DeleteAssignment.jsp?workgroup=${assignment.workgroupKey}&value=${assignment.idField}&id_task=${id_task}&id_question=${question.id}' color='danger' buttonIcon='trash' size='sm' />
+						</@td>
+					</@tr>
 					</#list>
 				</#if>
 				</tbody>
