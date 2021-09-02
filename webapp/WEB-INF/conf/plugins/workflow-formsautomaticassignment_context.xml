@@ -36,12 +36,5 @@
 	<bean id="workflow-formsautomaticassignment.automaticAssignmentService" class="fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service.AutomaticAssignmentService" />
 	<bean id="workflow-formsautomaticassignment.taskAutomaticAssignmentConfigService" class="fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service.TaskAutomaticAssignmentConfigService"
 		p:taskConfigDAO-ref="workflow-formsautomaticassignment.taskAutomaticAssignmentConfigDAO" />
- 
-    <!-- Archivers -->
-    <bean id="workflow-formsautomaticassignment.workflowFormsAutoAssignmentResourceArchiver"
-        class="fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service.archiver.WorkflowFormsAutoAssignmentResourceArchiver" />
-    <bean id="workflow-formsautomaticassignment.workflowFormsAutoAssignmentDeleteArchiveProcessingService"
-        class="fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service.archiver.WorkflowFormsAutoAssignmentDeleteArchiveProcessingService" />
-
 </beans>
 
