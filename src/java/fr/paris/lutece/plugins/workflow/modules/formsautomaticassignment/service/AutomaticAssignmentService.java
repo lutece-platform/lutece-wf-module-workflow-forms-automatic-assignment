@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -328,7 +328,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
             {
                 continue;
             }
-            
+
             Collection<Recipient> listRecipients = AdminMailingListService.getRecipients( workgroupConfig.getIdMailingList( ) );
             // Send Mail
             for ( Recipient recipient : listRecipients )
@@ -353,7 +353,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
         {
             return;
         }
-        
+
         if ( CollectionUtils.isNotEmpty( listFileAttachments ) )
         {
             MailService.sendMailMultipartHtml( null, config.getRecipientsCc( ), config.getRecipientsBcc( ), strSenderName, strSenderEmail, strSubject,
@@ -367,7 +367,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
     }
 
     // PRIVATE METHODS
-    
+
     /**
      * Fill the list of entry types
      * 

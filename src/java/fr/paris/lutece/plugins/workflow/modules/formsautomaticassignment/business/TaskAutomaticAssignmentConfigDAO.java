@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, AutomaticAssignmentPlugin.getPlugin( ) ) )
         {
             int nPos = 0;
-    
+
             daoUtil.setInt( ++nPos, config.getIdTask( ) );
             daoUtil.setInt( ++nPos, config.getIdForm( ) );
             daoUtil.setString( ++nPos, config.getTitle( ) );
@@ -81,7 +81,7 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
             daoUtil.setString( ++nPos, config.getLabelLinkViewRecord( ) );
             daoUtil.setString( ++nPos, config.getRecipientsCc( ) );
             daoUtil.setString( ++nPos, config.getRecipientsBcc( ) );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -95,7 +95,7 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, AutomaticAssignmentPlugin.getPlugin( ) ) )
         {
             int nPos = 0;
-    
+
             daoUtil.setInt( ++nPos, config.getIdTask( ) );
             daoUtil.setInt( ++nPos, config.getIdForm( ) );
             daoUtil.setString( ++nPos, config.getTitle( ) );
@@ -107,9 +107,9 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
             daoUtil.setString( ++nPos, config.getLabelLinkViewRecord( ) );
             daoUtil.setString( ++nPos, config.getRecipientsCc( ) );
             daoUtil.setString( ++nPos, config.getRecipientsBcc( ) );
-    
+
             daoUtil.setInt( ++nPos, config.getIdTask( ) );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -125,7 +125,7 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
         {
             daoUtil.setInt( 1, nIdTask );
             daoUtil.executeQuery( );
-    
+
             if ( daoUtil.next( ) )
             {
                 int nPos = 0;
@@ -170,7 +170,7 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
         {
             daoUtil.setInt( 1, nIdTask );
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 listIntegerPositionEntryFile.add( daoUtil.getInt( 1 ) );

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,9 +74,9 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
             daoUtil.setInt( 2, assign.getIdQuestion( ) );
             daoUtil.setInt( 3, assign.getIdField( ) );
             daoUtil.setString( 4, assign.getWorkgroupKey( ) );
-    
+
             daoUtil.executeQuery( );
-    
+
             if ( daoUtil.next( ) && daoUtil.getInt( 1 ) > 0 )
             {
                 return true;
@@ -97,7 +97,7 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
             daoUtil.setInt( 2, assign.getIdQuestion( ) );
             daoUtil.setInt( 3, assign.getIdField( ) );
             daoUtil.setString( 4, assign.getWorkgroupKey( ) );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -124,12 +124,12 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin ) )
         {
             int nPos = 0;
-    
+
             daoUtil.setInt( ++nPos, assign.getIdTask( ) );
             daoUtil.setInt( ++nPos, assign.getIdQuestion( ) );
             daoUtil.setInt( ++nPos, assign.getIdField( ) );
             daoUtil.setString( ++nPos, assign.getWorkgroupKey( ) );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -147,9 +147,9 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
         {
             daoUtil.setInt( 1, nIdTask );
             daoUtil.setInt( 2, nIdQuestion );
-    
+
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 assignment = new AutomaticAssignment( );
@@ -175,9 +175,9 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_TASK, plugin ) )
         {
             daoUtil.setInt( 1, nIdTask );
-    
+
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 assignment = new AutomaticAssignment( );
@@ -202,9 +202,9 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ID_QUESTION_BY_TASK, plugin ) )
         {
             daoUtil.setInt( 1, nIdTask );
-    
+
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 idEntriesList.add( daoUtil.getInt( CONSTANT_ID_QUESTION ) );

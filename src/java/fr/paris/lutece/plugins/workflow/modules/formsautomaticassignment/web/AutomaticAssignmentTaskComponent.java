@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -397,7 +397,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
             {
                 continue;
             }
-            
+
             HashMap<String, Object> workgroupsItem = new HashMap<>( );
             workgroupsItem.put( MARK_ITEM, referenceItem );
 

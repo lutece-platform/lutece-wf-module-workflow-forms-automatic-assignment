@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -97,7 +97,7 @@ public class TaskAutomaticAssignment extends SimpleTask
         FormResponse formResponse = FormResponseHome.findByPrimaryKey( resourceHistory.getIdResource( ) );
         if ( formResponse == null )
         {
-            return;   
+            return;
         }
 
         List<String> listWorkgroup = new ArrayList<>( );
