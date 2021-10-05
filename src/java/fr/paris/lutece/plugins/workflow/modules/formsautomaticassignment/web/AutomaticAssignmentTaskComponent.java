@@ -73,7 +73,6 @@ import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
-import fr.paris.lutece.util.xml.XmlUtil;
 
 /**
  *
@@ -131,11 +130,6 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
 
     // JSP
     private static final String JSP_DO_UPDATE_DIRECTORY = "jsp/admin/plugins/workflow/modules/formsautomaticassignment/DoUpdateDirectory.jsp";
-
-    // XML
-    private static final String TAG_ASSIGNMENT = "assignment";
-    private static final String TAG_LIST_WORKGROUP = "list-workgroup";
-    private static final String TAG_WORKGROUP = "workgroup";
 
     // SERVICES
     @Inject
@@ -428,38 +422,5 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_TASK_AUTO_ASSIGNMENT_INFORMATION, locale, model );
 
         return template.getHtml( );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTaskInformationXml( int nIdHistory, HttpServletRequest request, Locale locale, ITask task )
-    {
-        List<AssignmentHistory> listAssignmentHistory = _assignmentHistoryService.getListByHistory( nIdHistory, task.getId( ), WorkflowUtils.getPlugin( ) );
-
-        StringBuffer strXml = new StringBuffer( );
-
-        XmlUtil.beginElement( strXml, TAG_ASSIGNMENT );
-        XmlUtil.beginElement( strXml, TAG_LIST_WORKGROUP );
-
-        for ( ReferenceItem referenceItem : AdminWorkgroupService.getUserWorkgroups( AdminUserService.getAdminUser( request ), locale ) )
-        {
-            if ( !referenceItem.getCode( ).equals( AdminWorkgroupService.ALL_GROUPS ) && listAssignmentHistory != null )
-            {
-                for ( AssignmentHistory assignmentHistory : listAssignmentHistory )
-                {
-                    if ( referenceItem.getCode( ).equals( assignmentHistory.getWorkgroup( ) ) )
-                    {
-                        XmlUtil.addElementHtml( strXml, TAG_WORKGROUP, referenceItem.getName( ) );
-                    }
-                }
-            }
-        }
-
-        XmlUtil.endElement( strXml, TAG_LIST_WORKGROUP );
-        XmlUtil.endElement( strXml, TAG_ASSIGNMENT );
-
-        return strXml.toString( );
     }
 }
