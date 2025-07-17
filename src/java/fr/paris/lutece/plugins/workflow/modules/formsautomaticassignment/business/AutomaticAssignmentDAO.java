@@ -35,6 +35,8 @@ package fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.busine
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,8 @@ import java.util.List;
  * AutomaticAssignmentDAO
  *
  */
+@ApplicationScoped
+@Named( AutomaticAssignmentDAO.BEAN_NAME )
 public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
 {
     public static final String BEAN_NAME = "workflow-formsautomaticassignment.automaticAssignmentDAO";

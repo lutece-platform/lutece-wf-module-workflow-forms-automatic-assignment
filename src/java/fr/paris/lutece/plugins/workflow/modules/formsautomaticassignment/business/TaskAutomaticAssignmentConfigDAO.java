@@ -35,6 +35,8 @@ package fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.busine
 
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service.AutomaticAssignmentPlugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,8 @@ import java.util.List;
  * TaskAutomaticAssignmentConfigDAO
  *
  */
+@ApplicationScoped
+@Named( "workflow-formsautomaticassignment.taskAutomaticAssignmentConfigDAO" )
 public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmentConfigDAO
 {
     private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_task, id_form, title,is_notify,message,subject,sender_name,is_view_form_response,label_link_view_form_response,recipients_cc,recipients_bcc "

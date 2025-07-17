@@ -37,9 +37,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -67,6 +68,8 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
  * TaskAutomaticAssignment
  *
  */
+@Dependent
+@Named( "workflow-formsautomaticassignment.taskAutomaticAssignment" )
 public class TaskAutomaticAssignment extends SimpleTask
 {
     // SERVICES

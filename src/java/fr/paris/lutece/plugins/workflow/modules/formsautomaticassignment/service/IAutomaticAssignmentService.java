@@ -36,10 +36,8 @@ package fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.servic
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.transaction.annotation.Transactional;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import fr.paris.lutece.plugins.forms.business.FormQuestionResponse;
 import fr.paris.lutece.plugins.forms.business.Question;
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.business.AutomaticAssignment;
@@ -64,7 +62,7 @@ public interface IAutomaticAssignmentService
      * @param plugin
      *            the plugin
      */
-    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
+    @Transactional
     void create( AutomaticAssignment assign, Plugin plugin );
 
     /**
@@ -75,7 +73,7 @@ public interface IAutomaticAssignmentService
      * @param plugin
      *            the plugin
      */
-    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
+    @Transactional
     void remove( AutomaticAssignment assign, Plugin plugin );
 
     /**
@@ -86,7 +84,7 @@ public interface IAutomaticAssignmentService
      * @param plugin
      *            the plugin
      */
-    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
+    @Transactional
     void removeByTask( int nIdTask, Plugin plugin );
 
     // CHECKS

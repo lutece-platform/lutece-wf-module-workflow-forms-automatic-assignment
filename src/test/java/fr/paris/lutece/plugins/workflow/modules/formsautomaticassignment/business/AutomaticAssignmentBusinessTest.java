@@ -35,26 +35,30 @@ package fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.busine
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import fr.paris.lutece.plugins.workflow.service.WorkflowPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.test.LuteceTestCase;
+import jakarta.inject.Inject;
 
 public class AutomaticAssignmentBusinessTest extends LuteceTestCase
 {
 
+	@Inject
     private IAutomaticAssignmentDAO _dao;
     private Plugin _plugin;
 
-    @Override
+    @BeforeEach
     protected void setUp( ) throws Exception
     {
         super.setUp( );
-        _dao = SpringContextService.getBean( AutomaticAssignmentDAO.BEAN_NAME );
         _plugin = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
     }
 
+    @Test
     public void testCRUD( )
     {
         AutomaticAssignment assignment = new AutomaticAssignment( );

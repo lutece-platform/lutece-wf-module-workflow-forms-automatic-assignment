@@ -39,9 +39,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -55,6 +56,7 @@ import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service.TaskAutomaticAssignmentConfigService;
 import fr.paris.lutece.plugins.workflow.utils.WorkflowUtils;
 import fr.paris.lutece.plugins.workflow.web.task.NoFormTaskComponent;
+import fr.paris.lutece.plugins.workflowcore.business.task.ITaskType;
 import fr.paris.lutece.plugins.workflowcore.service.config.ITaskConfigService;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
 import fr.paris.lutece.portal.business.mailinglist.MailingList;
@@ -79,6 +81,8 @@ import fr.paris.lutece.util.url.UrlItem;
  * AutomaticAssignmentTaskComponent
  *
  */
+@ApplicationScoped
+@Named( "workflow-formsautomaticassignment.automaticAssignmentTaskComponent" )
 public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
 {
     // Templates
@@ -140,6 +144,15 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     @Inject
     private IAssignmentHistoryService _assignmentHistoryService;
 
+    @Inject
+    public AutomaticAssignmentTaskComponent( @Named( "workflow-formsautomaticassignment.taskTypeAutomaticAssignment" ) ITaskType taskType, 
+    		                                 @Named( "workflow-formsautomaticassignment.taskAutomaticAssignmentConfigService" ) ITaskConfigService taskConfigService )
+    {
+        setTaskType( taskType );
+        setTaskConfigService( taskConfigService );
+    }
+    
+    
     /**
      * {@inheritDoc}
      */
