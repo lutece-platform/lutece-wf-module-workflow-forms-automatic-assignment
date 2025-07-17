@@ -3,14 +3,14 @@
     <parent>
         <artifactId>lutece-global-pom</artifactId>
         <groupId>fr.paris.lutece.tools</groupId>
-        <version>5.2.0</version>
+        <version>8.0.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>module-workflow-forms-automatic-assignment</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>2.1.1-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <name>Workflow forms automatic assignment module</name>
 
     <repositories>
@@ -26,21 +26,33 @@
         <dependency>
             <groupId>fr.paris.lutece</groupId>
             <artifactId>lutece-core</artifactId>
-            <version>[7.0.0,)</version>
+            <version>[8.0.0-SNAPSHOT,)</version>
             <type>lutece-core</type>
         </dependency>
         <dependency>
             <groupId>fr.paris.lutece.plugins</groupId>
             <artifactId>plugin-workflow</artifactId>
-            <version>[5.3.0,)</version>
+            <version>[7.0.0-SNAPSHOT,)</version>
             <type>lutece-plugin</type>
         </dependency>
         <dependency>
             <groupId>fr.paris.lutece.plugins</groupId>
             <artifactId>plugin-forms</artifactId>
-            <version>[2.4.0,)</version>
+            <version>[4.0.0-SNAPSHOT,)</version>
             <type>lutece-plugin</type>
         </dependency>
+        <!-- JUnit -->
+        <dependency>
+            <groupId>fr.paris.lutece.plugins</groupId>
+            <artifactId>library-lutece-unit-testing</artifactId>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+	        <artifactId>jaxb-runtime</artifactId>
+	        <scope>test</scope>  
+		</dependency>
     </dependencies>
 	
     <properties>

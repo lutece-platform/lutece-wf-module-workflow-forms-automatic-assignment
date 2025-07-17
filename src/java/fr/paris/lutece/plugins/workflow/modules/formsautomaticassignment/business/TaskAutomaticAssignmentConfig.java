@@ -35,8 +35,10 @@ package fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.busine
 
 import java.util.List;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Named;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 import fr.paris.lutece.plugins.workflow.modules.assignment.business.WorkgroupConfig;
 import fr.paris.lutece.plugins.workflowcore.business.config.TaskConfig;
@@ -46,6 +48,8 @@ import fr.paris.lutece.plugins.workflowcore.business.config.TaskConfig;
  * TaskAutomaticAssignmentConfig
  *
  */
+@Dependent
+@Named( "workflow-formsautomaticassignment.taskAutomaticAssignmentConfig" )
 public class TaskAutomaticAssignmentConfig extends TaskConfig
 {
     @NotNull

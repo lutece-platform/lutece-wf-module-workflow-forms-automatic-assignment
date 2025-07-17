@@ -40,7 +40,6 @@ import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.business.AutomaticAssignment;
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.business.TaskAutomaticAssignmentConfig;
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service.AutomaticAssignmentPlugin;
-import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service.AutomaticAssignmentService;
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service.IAutomaticAssignmentService;
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service.TaskAutomaticAssignmentConfigService;
 import fr.paris.lutece.plugins.workflowcore.service.config.ITaskConfigService;
@@ -50,7 +49,6 @@ import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
@@ -60,13 +58,18 @@ import fr.paris.lutece.util.url.UrlItem;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  *
  * AutomaticAssignmentJspBean
  *
  */
+@RequestScoped
+@Named
 public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
 {
     private static final long serialVersionUID = -8429549377694294789L;
@@ -87,8 +90,12 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
     private static final String MESSAGE_ERROR_MISSING_FIELD = "module.workflow.formsautomaticassignment.message.missing_field";
 
     // SERVICES
-    private IAutomaticAssignmentService _automaticAssignmentService = SpringContextService.getBean( AutomaticAssignmentService.BEAN_SERVICE );
-    private ITaskConfigService _taskAutomaticAssignmentConfigService = SpringContextService.getBean( TaskAutomaticAssignmentConfigService.BEAN_SERVICE );
+    @Inject
+    private IAutomaticAssignmentService _automaticAssignmentService;
+    
+    @Inject
+    @Named( TaskAutomaticAssignmentConfigService.BEAN_SERVICE )
+    private ITaskConfigService _taskAutomaticAssignmentConfigService;
 
     /**
      * Get the modify entry assignment page which allow the user to assign a workgroup to a field

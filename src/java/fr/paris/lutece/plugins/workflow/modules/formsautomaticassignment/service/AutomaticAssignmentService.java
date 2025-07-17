@@ -42,13 +42,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.transaction.annotation.Transactional;
 
 import fr.paris.lutece.plugins.forms.business.FormQuestionResponse;
 import fr.paris.lutece.plugins.forms.business.Question;
@@ -90,7 +91,9 @@ import fr.paris.lutece.util.xml.XmlUtil;
  * AutomaticAssignmentService
  *
  */
-public final class AutomaticAssignmentService implements IAutomaticAssignmentService
+@ApplicationScoped
+@Named( AutomaticAssignmentService.BEAN_SERVICE )
+public class AutomaticAssignmentService implements IAutomaticAssignmentService
 {
     public static final String BEAN_SERVICE = "workflow-formsautomaticassignment.automaticAssignmentService";
 
@@ -141,9 +144,9 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
     private IWorkgroupConfigService _workgroupConfigService;
 
     /**
-     * Private constructor
+     * Constructor
      */
-    private AutomaticAssignmentService( )
+    public AutomaticAssignmentService( )
     {
     }
 
@@ -151,7 +154,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
      * {@inheritDoc}
      */
     @Override
-    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
+    @Transactional
     public void create( AutomaticAssignment assign, Plugin plugin )
     {
         _automaticAssignmentDAO.insert( assign, plugin );
@@ -161,7 +164,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
      * {@inheritDoc}
      */
     @Override
-    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
+    @Transactional
     public void remove( AutomaticAssignment assign, Plugin plugin )
     {
         _automaticAssignmentDAO.delete( assign, plugin );
@@ -171,7 +174,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
      * {@inheritDoc}
      */
     @Override
-    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
+    @Transactional
     public void removeByTask( int nIdTask, Plugin plugin )
     {
         _automaticAssignmentDAO.deleteByTask( nIdTask, plugin );

@@ -40,19 +40,23 @@ import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.busines
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.business.TaskAutomaticAssignmentConfig;
 import fr.paris.lutece.plugins.workflow.utils.WorkflowUtils;
 import fr.paris.lutece.plugins.workflowcore.business.config.ITaskConfig;
+import fr.paris.lutece.plugins.workflowcore.business.config.ITaskConfigDAO;
 import fr.paris.lutece.plugins.workflowcore.service.config.TaskConfigService;
-
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.transaction.Transactional;
 
 /**
  *
  * TaskAutomaticAssignmentConfigService
  *
  */
+@ApplicationScoped
+@Named( TaskAutomaticAssignmentConfigService.BEAN_SERVICE )
 public class TaskAutomaticAssignmentConfigService extends TaskConfigService
 {
     /** The Constant BEAN_SERVICE. */
@@ -64,11 +68,16 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
     @Inject
     private IAutomaticAssignmentService _automaticAssignmentService;
 
+    @Inject
+    public TaskAutomaticAssignmentConfigService(@Named( "workflow-formsautomaticassignment.taskAutomaticAssignmentConfigDAO" ) ITaskConfigDAO<TaskAutomaticAssignmentConfig> taskAutomaticAssignmentConfigDAO) {
+       setTaskConfigDAO( (ITaskConfigDAO) taskAutomaticAssignmentConfigDAO ); 
+    }
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
+    @Transactional
     public void create( ITaskConfig config )
     {
         super.create( config );
@@ -116,7 +125,7 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
      * {@inheritDoc}
      */
     @Override
-    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
+    @Transactional
     public void update( ITaskConfig config )
     {
         super.update( config );
@@ -170,7 +179,7 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
      * {@inheritDoc}
      */
     @Override
-    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
+    @Transactional
     public void remove( int nIdTask )
     {
         _workgroupConfigService.removeByTask( nIdTask, WorkflowUtils.getPlugin( ) );
