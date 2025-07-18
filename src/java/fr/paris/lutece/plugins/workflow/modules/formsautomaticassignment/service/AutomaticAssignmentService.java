@@ -247,9 +247,9 @@ public class AutomaticAssignmentService implements IAutomaticAssignmentService
     public List<Question> getAuthorizedQuestions( int nIdTask )
     {
 
-        List<Integer> listIdTypesAuthorized = fillListEntryTypes( PROPERTY_ENTRIES_TYPE_ALLOWED );
+        List<String> listIdTypesAuthorized = fillListEntryTypes( PROPERTY_ENTRIES_TYPE_ALLOWED );
 
-        return getAllQuestions( nIdTask ).stream( ).filter( x -> listIdTypesAuthorized.contains( x.getEntry( ).getEntryType( ).getIdType( ) ) )
+        return getAllQuestions( nIdTask ).stream( ).filter( x -> listIdTypesAuthorized.contains( x.getEntry( ).getEntryType( ).getBeanName( ) ) )
                 .collect( Collectors.toList( ) );
     }
 
@@ -257,9 +257,9 @@ public class AutomaticAssignmentService implements IAutomaticAssignmentService
     public List<Question> getQuestionsTypesFile( int nIdTask )
     {
 
-        List<Integer> listIdTypesFiles = fillListEntryTypes( PROPERTY_ENTRIES_TYPE_FILES );
+        List<String> listIdTypesFiles = fillListEntryTypes( PROPERTY_ENTRIES_TYPE_FILES );
 
-        return getAllQuestions( nIdTask ).stream( ).filter( x -> listIdTypesFiles.contains( x.getEntry( ).getEntryType( ).getIdType( ) ) )
+        return getAllQuestions( nIdTask ).stream( ).filter( x -> listIdTypesFiles.contains( x.getEntry( ).getEntryType( ).getBeanName( ) ) )
                 .collect( Collectors.toList( ) );
     }
 
@@ -376,11 +376,11 @@ public class AutomaticAssignmentService implements IAutomaticAssignmentService
      * 
      * @param strPropertyEntryTypes
      *            the property containing the entry types
-     * @return a list of integer
+     * @return a list of string
      */
-    private static List<Integer> fillListEntryTypes( String strPropertyEntryTypes )
+    private static List<String> fillListEntryTypes( String strPropertyEntryTypes )
     {
-        List<Integer> listEntryTypes = new ArrayList<>( );
+        List<String> listEntryTypes = new ArrayList<>( );
         String strEntryTypes = AppPropertiesService.getProperty( strPropertyEntryTypes );
 
         if ( StringUtils.isNotBlank( strEntryTypes ) )
@@ -389,10 +389,9 @@ public class AutomaticAssignmentService implements IAutomaticAssignmentService
 
             for ( String strAcceptEntryType : listAcceptEntryTypesForIdDemand )
             {
-                if ( StringUtils.isNotBlank( strAcceptEntryType ) && StringUtils.isNumeric( strAcceptEntryType ) )
+                if ( StringUtils.isNotBlank( strAcceptEntryType ) )
                 {
-                    int nAcceptedEntryType = Integer.parseInt( strAcceptEntryType );
-                    listEntryTypes.add( nAcceptedEntryType );
+                    listEntryTypes.add( strAcceptEntryType );
                 }
             }
         }
