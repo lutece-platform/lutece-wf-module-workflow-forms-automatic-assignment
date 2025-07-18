@@ -26,7 +26,7 @@ CREATE TABLE  workflow_forms_auto_assignment_cf (
 );
 
 CREATE TABLE workflow_forms_auto_assignment_ef(
-  id_task INT DEFAULT NULL,
-  position_form_question_file INT DEFAULT NULL,
+  id_task INT NOT NULL,
+  position_form_question_file INT NOT NULL,
   PRIMARY KEY (id_task, position_form_question_file)
 );
