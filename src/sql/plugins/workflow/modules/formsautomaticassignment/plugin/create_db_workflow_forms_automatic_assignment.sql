@@ -1,3 +1,6 @@
+--liquibase formatted sql
+--changeset workflow-formsautomaticassignment:create_db_workflow_forms_automatic_assignment.sql
+--preconditions onFail:MARK_RAN onError:WARN
 DROP TABLE IF EXISTS workflow_forms_auto_assignment;
 DROP TABLE IF EXISTS workflow_forms_auto_assignment_cf;
 DROP TABLE IF EXISTS workflow_forms_auto_assignment_ef;
