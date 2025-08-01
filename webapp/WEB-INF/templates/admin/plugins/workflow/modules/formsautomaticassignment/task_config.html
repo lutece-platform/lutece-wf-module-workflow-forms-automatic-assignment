@@ -166,7 +166,7 @@
 						<#list question_types_file_list as question>
 							<tr>
 								<td>
-									<@checkBox labelFor='' labelKey='' name='list_position_question_file_checked' id='list_position_question_file_checked' value='${question.entry.position}' checked=( config.listPositionsQuestionFile?? && config.listPositionsQuestionFile?has_content && isSelected( question.entry.position, config.listPositionsQuestionFile )) />
+									<@checkBox labelFor='' labelKey='' name='list_code_question_file_checked' id='list_code_question_file_checked' value='${question.entry.code}' checked=( config.listCodesQuestionFile?? && config.listCodesQuestionFile?has_content && isSelected( question.entry.code, config.listCodesQuestionFile )) />
 								</td>
 								<td>
 									${question.title}

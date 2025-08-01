@@ -116,7 +116,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     private static final String PARAMETER_LABEL_LINK_VIEW_FORM_RESPONSE = "label_link_view_form_response";
     private static final String PARAMETER_RECIPIENTS_CC = "recipients_cc";
     private static final String PARAMETER_RECIPIENTS_BCC = "recipients_bcc";
-    private static final String PARAMETER_LIST_POSITION_QUESTION_FILE_CHECKED = "list_position_question_file_checked";
+    private static final String PARAMETER_LIST_CODE_QUESTION_FILE_CHECKED = "list_code_question_file_checked";
 
     // Properties
     private static final String FIELD_TITLE = "module.workflow.formsautomaticassignment.task_config.label_title";
@@ -172,7 +172,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
         String strLabelLinkViewRecord = request.getParameter( PARAMETER_LABEL_LINK_VIEW_FORM_RESPONSE );
         String strRecipientsCc = request.getParameter( PARAMETER_RECIPIENTS_CC );
         String strRecipientsBcc = request.getParameter( PARAMETER_RECIPIENTS_BCC );
-        String [ ] tabSelectedPositionsEntryFile = request.getParameterValues( PARAMETER_LIST_POSITION_QUESTION_FILE_CHECKED );
+        String [ ] tabSelectedCodesEntryFile = request.getParameterValues( PARAMETER_LIST_CODE_QUESTION_FILE_CHECKED );
         int nIdForm = -1;
 
         if ( ( strTitle == null ) || strTitle.trim( ).equals( WorkflowUtils.EMPTY_STRING ) )
@@ -279,20 +279,20 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
             }
         }
 
-        if ( ( tabSelectedPositionsEntryFile != null ) && ( tabSelectedPositionsEntryFile.length > 0 ) )
+        if ( ( tabSelectedCodesEntryFile != null ) && ( tabSelectedCodesEntryFile.length > 0 ) )
         {
-            List<Integer> listSelectedPositionEntryFile = new ArrayList<>( );
+            List<String> listSelectedCodeEntryFile = new ArrayList<>( );
 
-            for ( int i = 0; i < tabSelectedPositionsEntryFile.length; i++ )
+            for ( int i = 0; i < tabSelectedCodesEntryFile.length; i++ )
             {
-                listSelectedPositionEntryFile.add( WorkflowUtils.convertStringToInt( tabSelectedPositionsEntryFile [i] ) );
+                listSelectedCodeEntryFile.add( tabSelectedCodesEntryFile [i] );
             }
 
-            config.setListPositionsQuestionFile( listSelectedPositionEntryFile );
+            config.setListCodesQuestionFile( listSelectedCodeEntryFile );
         }
         else
         {
-            config.setListPositionsQuestionFile( null );
+            config.setListCodesQuestionFile( null );
         }
 
         if ( bCreate )
