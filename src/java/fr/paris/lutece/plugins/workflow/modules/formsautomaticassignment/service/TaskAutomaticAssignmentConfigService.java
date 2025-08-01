@@ -99,11 +99,11 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
             }
         }
 
-        if ( autoAssignConfig.getListPositionsQuestionFile( ) != null )
+        if ( autoAssignConfig.getListCodesQuestionFile( ) != null )
         {
-            for ( Integer nPositionEntryFile : autoAssignConfig.getListPositionsQuestionFile( ) )
+            for ( String nCodeEntryFile : autoAssignConfig.getListCodesQuestionFile( ) )
             {
-                _taskAutomaticAssignmentDAO.insertListPositionsEntryFile( config.getIdTask( ), nPositionEntryFile );
+                _taskAutomaticAssignmentDAO.insertListCodesEntryFile( config.getIdTask( ), nCodeEntryFile );
             }
         }
 
@@ -149,13 +149,13 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
             }
         }
 
-        _taskAutomaticAssignmentDAO.deleteListPositionsEntryFile( config.getIdTask( ) );
+        _taskAutomaticAssignmentDAO.deleteListCodesEntryFile( config.getIdTask( ) );
 
-        if ( autoAssignConfig.getListPositionsQuestionFile( ) != null )
+        if ( autoAssignConfig.getListCodesQuestionFile( ) != null )
         {
-            for ( Integer nPositionEntryFile : autoAssignConfig.getListPositionsQuestionFile( ) )
+            for ( String nCodeEntryFile : autoAssignConfig.getListCodesQuestionFile( ) )
             {
-                _taskAutomaticAssignmentDAO.insertListPositionsEntryFile( config.getIdTask( ), nPositionEntryFile );
+                _taskAutomaticAssignmentDAO.insertListCodesEntryFile( config.getIdTask( ), nCodeEntryFile );
             }
         }
 
@@ -183,7 +183,7 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
     public void remove( int nIdTask )
     {
         _workgroupConfigService.removeByTask( nIdTask, WorkflowUtils.getPlugin( ) );
-        _taskAutomaticAssignmentDAO.deleteListPositionsEntryFile( nIdTask );
+        _taskAutomaticAssignmentDAO.deleteListCodesEntryFile( nIdTask );
         _automaticAssignmentService.removeByTask( nIdTask, AutomaticAssignmentPlugin.getPlugin( ) );
         super.remove( nIdTask );
     }
@@ -201,7 +201,7 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
         if ( config != null )
         {
             config.setWorkgroups( _workgroupConfigService.getListByConfig( nIdTask, WorkflowUtils.getPlugin( ) ) );
-            config.setListPositionsQuestionFile( _taskAutomaticAssignmentDAO.loadListPositionsEntryFile( nIdTask ) );
+            config.setListCodesQuestionFile( _taskAutomaticAssignmentDAO.loadListCodesEntryFile( nIdTask ) );
             config.setListAutomaticAssignments( _automaticAssignmentService.findByTask( nIdTask, AutomaticAssignmentPlugin.getPlugin( ) ) );
         }
 

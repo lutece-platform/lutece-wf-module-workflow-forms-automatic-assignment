@@ -67,7 +67,7 @@ public class TaskAutomaticAssignmentConfig extends TaskConfig
     private String _strLabelLinkViewRecord;
     private String _strRecipientsCc;
     private String _strRecipientsBcc;
-    private List<Integer> _listPositionsQuestionFile;
+    private List<String> _listCodesQuestionFile;
     private List<AutomaticAssignment> _listAutomaticAssignments;
 
     /**
@@ -304,12 +304,12 @@ public class TaskAutomaticAssignmentConfig extends TaskConfig
     /**
      * Set the list of entry file which must be include in mail attachments
      * 
-     * @param listPositionsEntryFile
+     * @param listCodesEntryFile
      *            list of entry file which must be include in mail attachments
      */
-    public void setListPositionsQuestionFile( List<Integer> listPositionsEntryFile )
+    public void setListCodesQuestionFile( List<String> listCodesEntryFile )
     {
-        _listPositionsQuestionFile = listPositionsEntryFile;
+        _listCodesQuestionFile = listCodesEntryFile;
     }
 
     /**
@@ -317,9 +317,9 @@ public class TaskAutomaticAssignmentConfig extends TaskConfig
      * 
      * @return the list of entry file which must be include in mail attachments
      */
-    public List<Integer> getListPositionsQuestionFile( )
+    public List<String> getListCodesQuestionFile( )
     {
-        return _listPositionsQuestionFile;
+        return _listCodesQuestionFile;
     }
 
     /**

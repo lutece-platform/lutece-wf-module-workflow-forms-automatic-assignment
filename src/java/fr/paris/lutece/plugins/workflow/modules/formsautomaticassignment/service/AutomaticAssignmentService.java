@@ -270,13 +270,13 @@ public class AutomaticAssignmentService implements IAutomaticAssignmentService
     public List<FileAttachment> getFilesAttachment( TaskAutomaticAssignmentConfig config, List<FormQuestionResponse> listFormQuestionResponse )
     {
         List<FileAttachment> listFileAttachment = new ArrayList<>( );
-        if ( CollectionUtils.isEmpty( config.getListPositionsQuestionFile( ) ) )
+        if ( CollectionUtils.isEmpty( config.getListCodesQuestionFile( ) ) )
         {
             return listFileAttachment;
         }
-        for ( Integer nPositionEntryFile : config.getListPositionsQuestionFile( ) )
+        for ( String nCodeEntryFile : config.getListCodesQuestionFile( ) )
         {
-            List<File> listFiles = getFiles( nPositionEntryFile, listFormQuestionResponse );
+            List<File> listFiles = getFiles( nCodeEntryFile, listFormQuestionResponse );
 
             if ( CollectionUtils.isNotEmpty( listFiles ) )
             {
@@ -410,7 +410,7 @@ public class AutomaticAssignmentService implements IAutomaticAssignmentService
      *            the id directory
      * @return the directory file
      */
-    private List<File> getFiles( int nPosition, List<FormQuestionResponse> listFormQuestionResponse )
+    private List<File> getFiles( String nCode, List<FormQuestionResponse> listFormQuestionResponse )
     {
 
         List<File> listFiles = new ArrayList<>( );
@@ -418,7 +418,7 @@ public class AutomaticAssignmentService implements IAutomaticAssignmentService
         for ( FormQuestionResponse formQuestionResponse : listFormQuestionResponse )
         {
 
-            if ( formQuestionResponse.getQuestion( ).getEntry( ).getPosition( ) == nPosition
+            if ( formQuestionResponse.getQuestion( ).getEntry( ).getCode( ).equals( nCode )
                     && !CollectionUtils.isEmpty( formQuestionResponse.getEntryResponse( ) ) )
             {
                 File file = formQuestionResponse.getEntryResponse( ).get( 0 ).getFile( );

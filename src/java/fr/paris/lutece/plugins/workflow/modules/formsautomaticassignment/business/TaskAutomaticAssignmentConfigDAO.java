@@ -58,10 +58,10 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
             + "SET id_task=?,id_form=?, title=?, is_notify=?, message = ?, subject = ?, sender_name = ?, is_view_form_response = ?, label_link_view_form_response = ?, recipients_cc = ?, recipients_bcc = ? "
             + " WHERE id_task=? ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM workflow_forms_auto_assignment_cf  WHERE id_task=? ";
-    private static final String SQL_QUERY_DELETE_POSITION_ENTRY_FILE = " DELETE FROM workflow_forms_auto_assignment_ef where id_task= ? ";
-    private static final String SQL_QUERY_INSERT_POSITION_ENTRY_FILE = " INSERT INTO workflow_forms_auto_assignment_ef( "
-            + " id_task,position_form_question_file) VALUES ( ?,? ) ";
-    private static final String SQL_QUERY_FIND_LIST_POSITION_ENTRY_FILE = "SELECT position_form_question_file "
+    private static final String SQL_QUERY_DELETE_CODE_ENTRY_FILE = " DELETE FROM workflow_forms_auto_assignment_ef where id_task= ? ";
+    private static final String SQL_QUERY_INSERT_CODE_ENTRY_FILE = " INSERT INTO workflow_forms_auto_assignment_ef( "
+            + " id_task,code_form_question_file) VALUES ( ?,? ) ";
+    private static final String SQL_QUERY_FIND_LIST_CODE_ENTRY_FILE = "SELECT code_form_question_file "
             + " FROM workflow_forms_auto_assignment_ef WHERE id_task = ? ";
 
     /**
@@ -167,29 +167,29 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
      * {@inheritDoc}
      */
     @Override
-    public List<Integer> loadListPositionsEntryFile( int nIdTask )
+    public List<String> loadListCodesEntryFile( int nIdTask )
     {
-        List<Integer> listIntegerPositionEntryFile = new ArrayList<>( );
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_LIST_POSITION_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin( ) ) )
+        List<String> listIntegerCodeEntryFile = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_LIST_CODE_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin( ) ) )
         {
             daoUtil.setInt( 1, nIdTask );
             daoUtil.executeQuery( );
 
             while ( daoUtil.next( ) )
             {
-                listIntegerPositionEntryFile.add( daoUtil.getInt( 1 ) );
+            	listIntegerCodeEntryFile.add( daoUtil.getString( 1 ) );
             }
         }
-        return listIntegerPositionEntryFile;
+        return listIntegerCodeEntryFile;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void deleteListPositionsEntryFile( int nIdTask )
+    public void deleteListCodesEntryFile( int nIdTask )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_POSITION_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin( ) ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_CODE_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin( ) ) )
         {
             daoUtil.setInt( 1, nIdTask );
             daoUtil.executeUpdate( );
@@ -200,12 +200,12 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
      * {@inheritDoc}
      */
     @Override
-    public void insertListPositionsEntryFile( int nIdTask, Integer nPositionEntryFile )
+    public void insertListCodesEntryFile( int nIdTask, String nCodeEntryFile )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_POSITION_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin( ) ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CODE_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin( ) ) )
         {
             daoUtil.setInt( 1, nIdTask );
-            daoUtil.setInt( 2, nPositionEntryFile );
+            daoUtil.setString( 2, nCodeEntryFile );
             daoUtil.executeUpdate( );
         }
     }

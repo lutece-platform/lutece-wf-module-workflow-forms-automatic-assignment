@@ -44,29 +44,29 @@ import java.util.List;
 public interface ITaskAutomaticAssignmentConfigDAO extends ITaskConfigDAO<TaskAutomaticAssignmentConfig>
 {
     /**
-     * Load the position of entry file which must insert in attachment mail
+     * Load the code of entry file which must insert in attachment mail
      * 
      * @param nIdTask
      *            the id task
-     * @return the position of entry file which must insert in attachment mail
+     * @return the code of entry file which must insert in attachment mail
      */
-    List<Integer> loadListPositionsEntryFile( int nIdTask );
+    List<String> loadListCodesEntryFile( int nIdTask );
 
     /**
-     * Delete all position of entry file which must insert in attachment mail
+     * Delete all codes of entry file which must insert in attachment mail
      * 
      * @param nIdTask
      *            the id task
      */
-    void deleteListPositionsEntryFile( int nIdTask );
+    void deleteListCodesEntryFile( int nIdTask );
 
     /**
      * insert entry file which must insert in attachment mail
      * 
      * @param nIdTask
      *            the id task
-     * @param nPositionEntryFile
+     * @param nCodeEntryFile
      *            the entry file
      */
-    void insertListPositionsEntryFile( int nIdTask, Integer nPositionEntryFile );
+    void insertListCodesEntryFile( int nIdTask, String nCodeEntryFile );
 }
