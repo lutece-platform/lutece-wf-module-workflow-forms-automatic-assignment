@@ -10,7 +10,7 @@
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>module-workflow-forms-automatic-assignment</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>2.1.1-SNAPSHOT</version>
+    <version>2.1.1-beta-01</version>
     <name>Workflow forms automatic assignment module</name>
 
     <repositories>
@@ -52,6 +52,6 @@
         <connection>scm:git:https://github.com/lutece-platform/lutece-wf-module-workflow-forms-automatic-assignment.git</connection>
         <developerConnection>scm:git:https://github.com/lutece-platform/lutece-wf-module-workflow-forms-automatic-assignment.git</developerConnection>
         <url>https://github.com/lutece-platform/lutece-wf-module-workflow-forms-automatic-assignment.git</url>
-        <tag>HEAD</tag>
+        <tag>module-workflow-forms-automatic-assignment-2.1.1-beta-01</tag>
     </scm>
 </project>
