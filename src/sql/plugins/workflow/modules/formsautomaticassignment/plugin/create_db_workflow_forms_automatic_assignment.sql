@@ -1,6 +1,6 @@
---liquibase formatted sql
---changeset workflow-formsautomaticassignment:create_db_workflow_forms_automatic_assignment.sql
---preconditions onFail:MARK_RAN onError:WARN
+-- liquibase formatted sql
+-- changeset workflow-formsautomaticassignment:create_db_workflow_forms_automatic_assignment.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 DROP TABLE IF EXISTS workflow_forms_auto_assignment;
 DROP TABLE IF EXISTS workflow_forms_auto_assignment_cf;
 DROP TABLE IF EXISTS workflow_forms_auto_assignment_ef;
@@ -29,7 +29,7 @@ CREATE TABLE  workflow_forms_auto_assignment_cf (
 );
 
 CREATE TABLE workflow_forms_auto_assignment_ef(
-  id_task INT DEFAULT NULL,
-  position_form_question_file INT DEFAULT NULL,
+  id_task INT NOT NULL,
+  position_form_question_file INT NOT NULL,
   PRIMARY KEY (id_task, position_form_question_file)
 );
