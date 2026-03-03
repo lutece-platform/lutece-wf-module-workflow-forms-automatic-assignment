@@ -12,42 +12,30 @@
 			<@input type='hidden' name='id_question' value='${question.id}' />
 			<@formGroup labelFor='value' labelKey='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.question_value} ${question.title}'>		 	
 				<@select name="value">
-					<#list question.entry.fields as field>
-						<option value="${field.idField!}">${field.title!}</option>
-					</#list>
+				<#list question.entry.fields as field><@option value=field.idField! label=field.title! /></#list>
 				</@select>
 			</@formGroup>
-			<@formGroup labelFor='workgroup' labelKey='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.workgroups}'>		<@select name='workgroup'>
-					<#list workgroup_list as workgroup>
-						<option value="${workgroup.key}">${workgroup.description}</option>
-					</#list>
+			<@formGroup labelFor='workgroup' labelKey='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.workgroups}'>		
+				<@select name='workgroup'>
+				<#list workgroup_list as workgroup><@option value=workgroup.key! label=workgroup.description! /></#list>
 				</@select>
 			</@formGroup>
 			<@formGroup>
 				<@button type='submit' buttonIcon='plus' title='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.add_button}' />
 			</@formGroup>
-			<@table>
-				<thead>
-				<tr>
-					<th>#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.value}</th>
-					<th>#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.workgroups}</th>
-					<th>#i18n{module.workflow.formsautomaticassignment.task_config.label.actions}</th>
-				</tr>
-				</thead>
-				<tbody>
+			<@manageFeature>
 				<#if assignment_list?? >
 					<#list assignment_list as assignment>
-					<@tr>
-						<@td>${assignment.fieldValue!}</@td>
-						<@td>${assignment.workgroupDescription!}</@td>
-						<@td> 
+					<@manageFeatureItem>
+						<@manageFeatureItemColumn>#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.value} : ${assignment.fieldValue!}</@manageFeatureItemColumn>
+						<@manageFeatureItemColumn>#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.workgroups} : ${assignment.workgroupDescription!}</@manageFeatureItemColumn>
+						<@manageFeatureItemColumn align='end'> 
 							<@aButton href='jsp/admin/plugins/workflow/modules/formsautomaticassignment/DeleteAssignment.jsp?workgroup=${assignment.workgroupKey}&value=${assignment.idField}&id_task=${id_task}&id_question=${question.id}' color='danger' buttonIcon='trash' size='sm' />
-						</@td>
-					</@tr>
+						</@manageFeatureItemColumn>
+					</@manageFeatureItem>
 					</#list>
 				</#if>
-				</tbody>
-			</@table>
+			</@manageFeature>
 		</#if>
 		</@tform>
 	</@boxBody>
