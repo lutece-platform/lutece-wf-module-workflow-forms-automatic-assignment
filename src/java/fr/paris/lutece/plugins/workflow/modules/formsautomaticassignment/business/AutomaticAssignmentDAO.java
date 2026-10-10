@@ -123,7 +123,7 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
      * {@inheritDoc}
      */
     @Override
-    public synchronized void insert( AutomaticAssignment assign, Plugin plugin )
+    public void insert( AutomaticAssignment assign, Plugin plugin )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin ) )
         {

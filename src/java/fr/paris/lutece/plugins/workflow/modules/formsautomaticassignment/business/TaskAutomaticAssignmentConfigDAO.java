@@ -68,7 +68,7 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
      * {@inheritDoc}
      */
     @Override
-    public synchronized void insert( TaskAutomaticAssignmentConfig config )
+    public void insert( TaskAutomaticAssignmentConfig config )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, AutomaticAssignmentPlugin.getPlugin( ) ) )
         {
