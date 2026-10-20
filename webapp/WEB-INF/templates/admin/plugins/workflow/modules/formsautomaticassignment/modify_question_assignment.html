@@ -31,7 +31,7 @@
 						<@manageFeatureItemColumn>#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.value} : ${assignment.fieldValue!}</@manageFeatureItemColumn>
 						<@manageFeatureItemColumn>#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.workgroups} : ${assignment.workgroupDescription!}</@manageFeatureItemColumn>
 						<@manageFeatureItemColumn align='end'> 
-							<@aButton href='jsp/admin/plugins/workflow/modules/formsautomaticassignment/DeleteAssignment.jsp?workgroup=${assignment.workgroupKey?url}&value=${assignment.idField}&id_task=${id_task}&id_question=${question.id}' color='danger' buttonIcon='trash' size='sm' />
+							<@aButton href='jsp/admin/plugins/workflow/modules/formsautomaticassignment/DeleteAssignment.jsp?workgroup=${assignment.workgroupKey?url}&value=${assignment.idField}&id_task=${id_task}&id_question=${question.id}' color='danger' buttonIcon='trash' size='sm' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] />
 						</@manageFeatureItemColumn>
 					</@manageFeatureItem>
 					</#list>
