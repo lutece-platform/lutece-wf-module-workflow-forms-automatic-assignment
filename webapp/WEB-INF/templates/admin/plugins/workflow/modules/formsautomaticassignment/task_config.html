@@ -25,7 +25,7 @@
 			</@inputGroup>
 		</@formGroup>
         <@formGroup labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_notification}' hideLabel=['all'] rows=2>
-			<@checkBox orientation='switch' labelFor='is_notify' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_notification}' name='is_notify' id='is_notify' value='1' checked=(config?exists && config.notify) params='onclick="javascript:notification();"' />
+			<@checkBox orientation='switch' labelFor='is_notify' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_notification}' name='is_notify' id='is_notify' value='1' checked=(config?exists && config.notify) />
 		</@formGroup>
         <#if config??>
         <#if authorized_question_list??>
@@ -162,8 +162,8 @@ function notification() {
     	document.getElementById("notification").style.display = "block";
      <#-- 
 	 <#list workgroup_list as workgroup>
-        if(document.getElementById("div_${workgroup.item.code}")) {
-            document.getElementById("div_${workgroup.item.code}").style.display = "block";
+        if(document.getElementById("div_${workgroup.item.code?js_string?no_esc}")) {
+            document.getElementById("div_${workgroup.item.code?js_string?no_esc}").style.display = "block";
         }
     </#list> 
 	-->
@@ -171,8 +171,8 @@ function notification() {
         document.getElementById("notification").style.display = "none";
 	<#-- 
 		<#list workgroup_list as workgroup>
-        if(document.getElementById("div_${workgroup.item.code}")) {
-                document.getElementById("div_${workgroup.item.code}").style.display = "none";
+        if(document.getElementById("div_${workgroup.item.code?js_string?no_esc}")) {
+                document.getElementById("div_${workgroup.item.code?js_string?no_esc}").style.display = "none";
         }
         </#list> 
 	-->
@@ -180,6 +180,7 @@ function notification() {
 }
 
 notification();
+document.getElementById('is_notify').addEventListener('change', notification);
     
 document.addEventListener('DOMContentLoaded', function() {
 	var viewFormResponse = document.getElementById('view_form_response');
