@@ -50,6 +50,7 @@ import jakarta.transaction.Transactional;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import fr.paris.lutece.plugins.forms.business.FormQuestionResponse;
 import fr.paris.lutece.plugins.forms.business.Question;
@@ -74,12 +75,14 @@ import fr.paris.lutece.portal.business.file.FileHome;
 import fr.paris.lutece.portal.business.mailinglist.Recipient;
 import fr.paris.lutece.portal.business.physicalfile.PhysicalFile;
 import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
+import fr.paris.lutece.portal.service.editor.RichTextContentService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mail.MailService;
 import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -487,7 +490,9 @@ public class AutomaticAssignmentService implements IAutomaticAssignmentService
     }
 
     /**
-     * Build the subject Html
+     * Build the subject of the mail: a text, not HTML. The subject is a FreeMarker template rendered with HTML auto-escaping
+     * (LUT-33153), which writes the &lt; &gt; &amp; &quot; ' of the marker values (the user's responses) as entities; a mail
+     * subject would show them, so they are decoded once.
      * 
      * @param config
      *            the config
@@ -499,7 +504,19 @@ public class AutomaticAssignmentService implements IAutomaticAssignmentService
      */
     private String buildSubjectHtml( TaskAutomaticAssignmentConfig config, Map<String, Object> model, Locale locale )
     {
-        return AppTemplateService.getTemplateFromStringFtl( config.getSubject( ), locale, model ).getHtml( );
+        return toPlainText( AppTemplateService.getTemplateFromStringFtl( config.getSubject( ), locale, model ).getHtml( ) );
+    }
+
+    /**
+     * Turns the rendering of a text template back into plain text: the entities HTML auto-escaping wrote are decoded once.
+     *
+     * @param strRendered
+     *            the rendered text
+     * @return the plain text
+     */
+    static String toPlainText( String strRendered )
+    {
+        return StringEscapeUtils.unescapeHtml4( strRendered );
     }
 
     /**
@@ -595,8 +612,12 @@ public class AutomaticAssignmentService implements IAutomaticAssignmentService
             strLinkViewRecordHtml = AppTemplateService.getTemplateFromStringFtl( sbLinkHtml.toString( ), locale, modelTmp ).getHtml( );
         }
 
-        model.put( MARK_LINK_VIEW_FORM_RESPONSE, strLinkViewRecordHtml );
-        model.put( MARK_MESSAGE, config.getMessage( ) );
+        // HTML auto-escaping (LUT-33153): the link is HTML this service built; the message is rich text the administrator
+        // entered, stored as the editor produced it and rendered as richText() does (parser chosen by the prefix of the
+        // content, then sanitized). Both are markup, written as they are by the mail template of plugin-workflow and by the
+        // second rendering of the mail, while the responses of the user (question_<id>) stay strings, escaped there
+        model.put( MARK_LINK_VIEW_FORM_RESPONSE, HtmlMarkup.of( strLinkViewRecordHtml ) );
+        model.put( MARK_MESSAGE, RichTextContentService.getMarkup( config.getMessage( ) ) );
 
         return model;
     }
