@@ -1,5 +1,6 @@
 <@box style='primary'>
-	<@boxHeader title='#i18n{module.workflow.formsautomaticassignment.task_config.label.question} ${question.title} <small>#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.comment}</small>'>
+	<#assign boxTitle>#i18n{module.workflow.formsautomaticassignment.task_config.label.question} ${question.title} <small>#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.comment}</small></#assign>
+	<@boxHeader title=boxTitle>
 		<@tform type='inline' action='${url}'>
 			<@input type='hidden' name='id_task' value='${id_task}' size='sm' />
 			<@button type='submit' buttonIcon='times' title='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.back_button}' hideTitle=['xs','sm'] size='sm' cancel=true />
@@ -30,7 +31,7 @@
 						<@manageFeatureItemColumn>#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.value} : ${assignment.fieldValue!}</@manageFeatureItemColumn>
 						<@manageFeatureItemColumn>#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.workgroups} : ${assignment.workgroupDescription!}</@manageFeatureItemColumn>
 						<@manageFeatureItemColumn align='end'> 
-							<@aButton href='jsp/admin/plugins/workflow/modules/formsautomaticassignment/DeleteAssignment.jsp?workgroup=${assignment.workgroupKey}&value=${assignment.idField}&id_task=${id_task}&id_question=${question.id}' color='danger' buttonIcon='trash' size='sm' />
+							<@aButton href='jsp/admin/plugins/workflow/modules/formsautomaticassignment/DeleteAssignment.jsp?workgroup=${assignment.workgroupKey?url}&value=${assignment.idField}&id_task=${id_task}&id_question=${question.id}' color='danger' buttonIcon='trash' size='sm' />
 						</@manageFeatureItemColumn>
 					</@manageFeatureItem>
 					</#list>
