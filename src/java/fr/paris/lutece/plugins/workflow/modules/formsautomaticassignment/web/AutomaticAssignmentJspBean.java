@@ -56,6 +56,9 @@ import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,6 +68,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -106,33 +110,86 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
      * 
      * @param request
      *            the request
-     * @return the page
+     * @param response
+     *            the response
+     * @return the page, or null if the response has been redirected
+     * @throws IOException
+     *             if the redirection fails
      */
+    public String getModifyQuestionAssignments( HttpServletRequest request, HttpServletResponse response ) throws IOException
+    {
+        Question question = QuestionHome.findByPrimaryKey( getIdQuestion( request ) );
+
+        if ( question == null )
+        {
+            response.sendRedirect( AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MISSING_FIELD, AdminMessage.TYPE_STOP ) );
+
+            return null;
+        }
+
+        return getModifyQuestionAssignmentsPage( request, question );
+    }
+
+    /**
+     * Get the modify entry assignment page which allow the user to assign a workgroup to a field
+     * 
+     * @param request
+     *            the request
+     * @return the page, or an empty string if the question is not found
+     * @deprecated use {@link #getModifyQuestionAssignments(HttpServletRequest, HttpServletResponse)}
+     */
+    @Deprecated
     public String getModifyQuestionAssignments( HttpServletRequest request )
     {
-        String strIdTask = request.getParameter( PARAMETER_ID_TASK );
+        Question question = QuestionHome.findByPrimaryKey( getIdQuestion( request ) );
+
+        if ( question == null )
+        {
+            return StringUtils.EMPTY;
+        }
+
+        return getModifyQuestionAssignmentsPage( request, question );
+    }
+
+    /**
+     * Get the id of the question from the request
+     * 
+     * @param request
+     *            the request
+     * @return the id of the question, or -1 if the parameter is missing
+     */
+    private int getIdQuestion( HttpServletRequest request )
+    {
         String strIdQuestion = request.getParameter( PARAMETER_ID_QUESTION );
+
+        return ( strIdQuestion != null ) ? Integer.parseInt( strIdQuestion ) : -1;
+    }
+
+    /**
+     * Build the modify entry assignment page of a question
+     * 
+     * @param request
+     *            the request
+     * @param question
+     *            the question
+     * @return the page
+     */
+    private String getModifyQuestionAssignmentsPage( HttpServletRequest request, Question question )
+    {
+        String strIdTask = request.getParameter( PARAMETER_ID_TASK );
         List<AutomaticAssignment> assignmentList;
         Plugin autoAssignPlugin = PluginService.getPlugin( AutomaticAssignmentPlugin.PLUGIN_NAME );
 
         HashMap<String, Object> model = new HashMap<>( );
         int nIdTask = -1;
-        int nIdQuestion = -1;
 
         if ( strIdTask != null )
         {
             nIdTask = Integer.parseInt( strIdTask );
         }
 
-        if ( strIdQuestion != null )
-        {
-            nIdQuestion = Integer.parseInt( strIdQuestion );
-        }
-
-        assignmentList = _automaticAssignmentService.findByTaskByQuestion( nIdTask, nIdQuestion, autoAssignPlugin );
+        assignmentList = _automaticAssignmentService.findByTaskByQuestion( nIdTask, question.getId( ), autoAssignPlugin );
         setAssignmentValues( assignmentList );
-
-        Question question = QuestionHome.findByPrimaryKey( nIdQuestion );
 
         model.put( PARAMETER_QUESTION, question );
         model.put( MARK_CHOICE_LIST, getChoiceFields( question ) );
