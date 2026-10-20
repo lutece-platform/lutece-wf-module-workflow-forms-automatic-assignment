@@ -9,7 +9,6 @@
 </#if>
  <#return false>
 </#function>
-<#assign mandatoryIcon><@icon style='asterisk' /></#assign>
 <@row>
 	<@columns><@h level=3>#i18n{module.workflow.formsautomaticassignment.task_config.title}</@h></@columns>
 </@row>
@@ -18,7 +17,7 @@
         <@formGroup labelFor='title' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_title}' helpKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_title}' rows=2 mandatory=true>
         <#if config?exists && config.title??><@input type='text' name='title' value=config.title maxlength=255 /><#else><@input type='text' name='title' maxlength=255 /></#if>
         </@formGroup>
-		<@formGroup labelFor='directory' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_form}' helpKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_form_comment} #i18n{module.workflow.formsautomaticassignment.task_config.label_form_comment_assign}' rows=2>
+		<@formGroup labelFor='id_form' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_form}' helpKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_form_comment} #i18n{module.workflow.formsautomaticassignment.task_config.label_form_comment_assign}' rows=2>
 			<@inputGroup>
 				<@select name='id_form' default_value='${config.idForm}' items=form_list />
 				<@button type='submit' name='apply' value='apply' title='#i18n{module.workflow.formsautomaticassignment.task_config.update_button}' hideTitle=['all'] buttonIcon='check' />
@@ -38,7 +37,7 @@
 					<@manageFeatureItem>
 						<@manageFeatureItemColumn>#i18n{module.workflow.formsautomaticassignment.task_config.label.question} : ${question.title}</@manageFeatureItemColumn>                                 
 						<@manageFeatureItemColumn align='end'>    
-							<@aButton href='jsp/admin/plugins/workflow/modules/formsautomaticassignment/ModifyQuestionAssignment.jsp?id_task=${config.idTask}&id_question=${question.id}' buttonIcon='edit' size='sm' />
+							<@aButton href='jsp/admin/plugins/workflow/modules/formsautomaticassignment/ModifyQuestionAssignment.jsp?id_task=${config.idTask}&id_question=${question.id}' buttonIcon='edit' size='sm' title='#i18n{portal.util.labelModify}' hideTitle=['all'] />
 						</@manageFeatureItemColumn>
 					</@manageFeatureItem> 
 				</#list>             
@@ -51,24 +50,22 @@
     <@columns sm=8 id='notification'>    
     	<@row>
 			<@columns sm=8 >
-				<@formGroup labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_mapping_workgroup_mailing_list}' rows=2>
+				<@fieldSet legend='#i18n{module.workflow.formsautomaticassignment.task_config.label_mapping_workgroup_mailing_list}' legendClass='form-label'>
 					<#if workgroup_list?has_content>
-						<#assign is_first = true>
 						<#list workgroup_list as workgroup>
-							<#if !is_first><#else><#assign is_first = false></#if>
-							<@checkBox orientation='switch' labelFor='workgroups' labelKey='${workgroup.item.description}' id='workgroups' name='workgroups' value='${workgroup.item.key}' checked=(workgroup.config?exists) />
-							<@formLabel>#i18n{module.workflow.formsautomaticassignment.task_config.label_notification}</@formLabel>
+							<@checkBox orientation='switch' labelKey='${workgroup.item.description}' id='workgroups_${workgroup?index?c}' name='workgroups' value='${workgroup.item.key}' checked=(workgroup.config?exists) />
+							<@formLabel labelFor='id_mailing_list_${workgroup?index?c}'>#i18n{module.workflow.formsautomaticassignment.task_config.label_notification}<span class="visually-hidden"> ${workgroup.item.description}</span></@formLabel>
 							<#if workgroup.config?exists>
-								<@select name='id_mailing_list_${workgroup.item.key}' items=mailing_list default_value='${workgroup.config.idMailingList}' />
+								<@select name='id_mailing_list_${workgroup.item.key}' id='id_mailing_list_${workgroup?index?c}' items=mailing_list default_value='${workgroup.config.idMailingList}' />
 							<#else>
-								<@select name='id_mailing_list_${workgroup.item.key}' items=mailing_list default_value='-1' />
+								<@select name='id_mailing_list_${workgroup.item.key}' id='id_mailing_list_${workgroup?index?c}' items=mailing_list default_value='-1' />
 							</#if>
 						</#list>
 					<#else>
 						<@staticText>#i18n{module.workflow.formsautomaticassignment.task_config.no_working_group}</@staticText>
 					</#if>
-				</@formGroup>
-				<@formGroup labelFor='sender_name' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_user_name} ${mandatoryIcon}' helpKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_user_name_comment}' rows=2>
+				</@fieldSet>
+				<@formGroup labelFor='sender_name' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_user_name}' mandatory=true helpKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_user_name_comment}' rows=2>
 					<#if config?exists&&config.senderName?exists>
 						<@input type='text' name='sender_name' value='${config.senderName}' maxlength=255 />
 					<#else>
@@ -89,14 +86,14 @@
 						<@input type='text' name='recipients_bcc' value='' maxlength=255 />
 					</#if>
 				</@formGroup>
-				<@formGroup labelFor='suject' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_subject} ${mandatoryIcon}' helpKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_subject_comment}' rows=2>
+				<@formGroup labelFor='subject' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_subject}' mandatory=true helpKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_subject_comment}' rows=2>
 					<#if config?exists&&config.subject?exists>
 						<@input type='text' name='subject' value='${config.subject}' maxlength=255 />
 					<#else>
 						<@input type='text' name='subject' value='' maxlength=255 />
 					</#if>      
 				</@formGroup>
-				<@formGroup labelFor='message' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_message} ${mandatoryIcon}' helpKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_message_comment}' rows=2>
+				<@formGroup labelFor='message' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_message}' mandatory=true helpKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_message_comment}' rows=2>
 					<@div class="editor">
 						<#if config?exists && config.message?exists>
 							<@input type='textarea' name='message' id='' rows=5 cols=80 richtext=true>${config.message}</@input>
@@ -143,7 +140,7 @@
 					<@checkBox orientation='switch' labelFor='view_form_response' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_view_form_response}' name='view_form_response' id='view_form_response' value='1' checked=(config?exists && config.viewFormResponse) />
 				</@formGroup>
 				<@div id='record'>
-					<@formGroup labelFor='label_link_view_form_response' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_label_link_view_form_response} ${mandatoryIcon}' helpKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_label_link_view_form_response_comment} #i18n{module.workflow.formsautomaticassignment.task_config.label_freemarker_link_view_form_response}' rows=2>
+					<@formGroup labelFor='label_link_view_form_response' labelKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_label_link_view_form_response}' mandatory=true helpKey='#i18n{module.workflow.formsautomaticassignment.task_config.label_label_link_view_form_response_comment} #i18n{module.workflow.formsautomaticassignment.task_config.label_freemarker_link_view_form_response}' rows=2>
 					<#if config?exists && config.labelLinkViewRecord?has_content>
 						<@input type='text' name='label_link_view_form_response' value='${config.labelLinkViewRecord}' maxlength=255 />
 					<#else>
@@ -156,8 +153,17 @@
     </@columns>
 </@row>
 <script>
+function setRequired( id, required ) {
+	var field = document.getElementById( id );
+	if ( field ) {
+		field.required = required;
+	}
+}
+
 function notification() {
     var notif = document.getElementsByName("is_notify");
+    setRequired( 'sender_name', notif[0].checked );
+    setRequired( 'subject', notif[0].checked );
     if( notif[0].checked ){
     	document.getElementById("notification").style.display = "block";
      <#-- 
@@ -189,9 +195,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	if (!viewFormResponse.checked) {
 		record.style.display = 'none';
 	}
+	setRequired( 'label_link_view_form_response', viewFormResponse.checked );
 	
 	viewFormResponse.addEventListener('click', function() {
 		record.style.display = this.checked ? 'block' : 'none';
+		setRequired( 'label_link_view_form_response', this.checked );
 	});
 });
 </script>
