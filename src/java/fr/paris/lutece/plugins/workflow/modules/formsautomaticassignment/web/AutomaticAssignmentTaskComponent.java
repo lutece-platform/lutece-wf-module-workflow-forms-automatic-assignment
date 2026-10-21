@@ -134,6 +134,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
 
     // JSP
     private static final String JSP_DO_UPDATE_DIRECTORY = "jsp/admin/plugins/workflow/modules/formsautomaticassignment/DoUpdateDirectory.jsp";
+    private static final String JSP_MODIFY_TASK = "jsp/admin/plugins/workflow/ModifyTask.jsp";
 
     // SERVICES
     @Inject
@@ -206,7 +207,8 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
                     I18nService.getLocalizedString( strError, locale )
             };
 
-            return AdminMessageService.getMessageUrl( request, MESSAGE_MANDATORY_FIELD, tabRequiredFields, AdminMessage.TYPE_STOP );
+            return AdminMessageService.getMessageUrlReturningTo( request, MESSAGE_MANDATORY_FIELD, tabRequiredFields, AdminMessage.TYPE_STOP,
+                    getJspModifyTask( request, task ) );
         }
 
         if ( strIdForm != null )
@@ -245,7 +247,8 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
                     }
                     else
                     {
-                        return AdminMessageService.getMessageUrl( request, MESSAGE_NO_MAILINGLIST_FOR_WORKGROUP, AdminMessage.TYPE_STOP );
+                        return AdminMessageService.getMessageUrlReturningTo( request, MESSAGE_NO_MAILINGLIST_FOR_WORKGROUP, AdminMessage.TYPE_STOP,
+                                getJspModifyTask( request, task ) );
                     }
                 }
 
@@ -305,6 +308,23 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
         }
 
         return null;
+    }
+
+    /**
+     * Return the URL of the JSP modify task of the workflow plugin, on the configuration of the task
+     * 
+     * @param request
+     *            the request
+     * @param task
+     *            the task
+     * @return the URL of the JSP modify task
+     */
+    private String getJspModifyTask( HttpServletRequest request, ITask task )
+    {
+        UrlItem url = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MODIFY_TASK );
+        url.addParameter( PARAMETER_ID_TASK, task.getId( ) );
+
+        return url.getUrl( );
     }
 
     /**
