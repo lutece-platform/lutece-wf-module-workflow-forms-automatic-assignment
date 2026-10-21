@@ -227,7 +227,8 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
 
         if ( ( strValue == null ) || ( strWorkgroup == null ) )
         {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MISSING_FIELD, AdminMessage.TYPE_STOP );
+            return AdminMessageService.getMessageUrlReturningTo( request, MESSAGE_ERROR_MISSING_FIELD, AdminMessage.TYPE_STOP,
+                    getJspModifyQuestionAssignment( request, nIdTask, nIdQuestion ) );
         }
 
         AutomaticAssignment assign = new AutomaticAssignment( );
@@ -242,9 +243,26 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
         }
         else
         {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_ALREADY_EXIST, AdminMessage.TYPE_STOP );
+            return AdminMessageService.getMessageUrlReturningTo( request, MESSAGE_ALREADY_EXIST, AdminMessage.TYPE_STOP,
+                    getJspModifyQuestionAssignment( request, nIdTask, nIdQuestion ) );
         }
 
+        return getJspModifyQuestionAssignment( request, nIdTask, nIdQuestion );
+    }
+
+    /**
+     * Return the URL of the JSP modify question assignment
+     * 
+     * @param request
+     *            the request
+     * @param nIdTask
+     *            the id of the task
+     * @param nIdQuestion
+     *            the id of the question
+     * @return the URL of the JSP modify question assignment
+     */
+    private String getJspModifyQuestionAssignment( HttpServletRequest request, int nIdTask, int nIdQuestion )
+    {
         UrlItem url = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MODIFY_QUESTION_ASSIGNMENT );
 
         url.addParameter( PARAMETER_ID_TASK, nIdTask );
