@@ -12,7 +12,7 @@
 			<@input type='hidden' name='id_question' value='${question.id}' />
 			<@formGroup labelFor='value' labelKey='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.question_value} ${question.title}'>		 	
 				<@select name="value">
-				<#list question.entry.fields as field><@option value=field.idField! label=field.title! /></#list>
+				<#list choice_list as field><@option value=field.idField! label=field.title! /></#list>
 				</@select>
 			</@formGroup>
 			<@formGroup labelFor='workgroup' labelKey='#i18n{module.workflow.formsautomaticassignment.modify_entry_assignment.label.workgroups}'>		

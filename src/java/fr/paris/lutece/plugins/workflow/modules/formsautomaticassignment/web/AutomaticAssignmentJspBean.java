@@ -37,6 +37,7 @@ import fr.paris.lutece.plugins.forms.business.Question;
 import fr.paris.lutece.plugins.forms.business.QuestionHome;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
+import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.business.AutomaticAssignment;
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.business.TaskAutomaticAssignmentConfig;
 import fr.paris.lutece.plugins.workflow.modules.formsautomaticassignment.service.AutomaticAssignmentPlugin;
@@ -55,8 +56,10 @@ import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -80,6 +83,7 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_ID_TASK = "id_task";
     private static final String PARAMETER_ID_QUESTION = "id_question";
     private static final String PARAMETER_QUESTION = "question";
+    private static final String MARK_CHOICE_LIST = "choice_list";
     private static final String PARAMETER_URL = "url";
     private static final String PARAMETER_WORKGROUP_LIST = "workgroup_list";
     private static final String PARAMETER_WORKGROUP = "workgroup";
@@ -131,6 +135,7 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
         Question question = QuestionHome.findByPrimaryKey( nIdQuestion );
 
         model.put( PARAMETER_QUESTION, question );
+        model.put( MARK_CHOICE_LIST, getChoiceFields( question ) );
 
         UrlItem url = new UrlItem( JSP_MODIFY_TASK );
         url.addParameter( PARAMETER_ID_TASK, nIdTask );
@@ -143,6 +148,23 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_QUESTION_ASSIGNMENT, getLocale( ), model );
 
         return getAdminPage( template.getHtml( ) );
+    }
+
+    /**
+     * Gets the choices of a question, the only fields a workgroup can be assigned to: the other fields of the entry hold its configuration
+     *
+     * @param question
+     *            the question, may be null
+     * @return the fields of the question whose code is the answer choice code
+     */
+    static List<Field> getChoiceFields( Question question )
+    {
+        if ( question == null || question.getEntry( ) == null || question.getEntry( ).getFields( ) == null )
+        {
+            return new ArrayList<>( );
+        }
+        return question.getEntry( ).getFields( ).stream( ).filter( field -> IEntryTypeService.FIELD_ANSWER_CHOICE.equals( field.getCode( ) ) )
+                .collect( Collectors.toList( ) );
     }
 
     /**
