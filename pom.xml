@@ -10,7 +10,7 @@
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>module-workflow-forms-automatic-assignment</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>3.0.1-beta-02</version>
+    <version>3.0.1-SNAPSHOT</version>
     <name>Workflow forms automatic assignment module</name>
 
     <repositories>
